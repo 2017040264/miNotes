@@ -89,10 +89,13 @@ public class NoteEditActivity extends Activity implements OnClickListener,
     private class HeadViewHolder {
         //修改时间（文本视图）
         public TextView tvModified;
+
         //提醒标志（图像视图）
         public ImageView ivAlertIcon;
+
         //提醒时间（文本视图）
         public TextView tvAlertDate;
+
         //设置背景颜色（图像视图）
         public ImageView ibSetBgColor;
     }
@@ -101,6 +104,7 @@ public class NoteEditActivity extends Activity implements OnClickListener,
      * 常量，实现选择背景颜色按钮（未选择）和资源解析器中的颜色ID对应
      */
     private static final Map<Integer, Integer> sBgSelectorBtnsMap = new HashMap<Integer, Integer>();
+    // layout/note_eidt.xml
     static {
         sBgSelectorBtnsMap.put(R.id.iv_bg_yellow, ResourceParser.YELLOW);
         sBgSelectorBtnsMap.put(R.id.iv_bg_red, ResourceParser.RED);

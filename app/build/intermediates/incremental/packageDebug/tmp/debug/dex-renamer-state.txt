@@ -1,4 +1,4 @@
-#Mon Dec 28 16:52:29 CST 2020
-base.0=D\:\\software\\Notes-master\\app\\build\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+#Wed Dec 30 10:29:25 CST 2020
+base.0=D\:\\software\\miNotes\\app\\build\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
 path.0=classes.dex
 renamed.0=classes.dex

@@ -40,6 +40,7 @@
                 android:layout_marginRight="8dip"
                 android:textAppearance="@style/TextAppearanceSecondaryItem" />
 
+            <!--提醒图标-->
             <ImageView
                 android:id="@+id/iv_alert_icon"
                 android:layout_width="wrap_content"
@@ -62,6 +63,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/bg_btn_set_color" />
         </LinearLayout>
+        <!--编辑界面最上方的属性栏结束-->
 
         <LinearLayout
             android:id="@+id/sv_note_edit"
@@ -83,9 +85,11 @@
                 android:layout_gravity="left|top"
                 android:fadingEdgeLength="0dip">
 
+                <!--此处存在错误，增加 android:orientation="horizontal"-->
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
 
                     <net.micode.notes.ui.NoteEditText
                         android:id="@+id/note_edit_view"

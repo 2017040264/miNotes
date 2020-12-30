@@ -32,7 +32,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+    <!-- 应用名称和图标 -->
     <application
         android:debuggable="true"
         android:icon="@drawable/icon_app"
@@ -47,6 +47,8 @@
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustPan" >
             <intent-filter>
+
+                <!-- 应用程序入口 -->
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

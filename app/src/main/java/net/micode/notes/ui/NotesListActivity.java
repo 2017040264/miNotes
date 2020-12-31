@@ -15,8 +15,8 @@
  */
 
 package net.micode.notes.ui;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import android.R.menu;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -91,6 +91,8 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
     private static final String PREFERENCE_ADD_INTRODUCTION = "net.micode.notes.introduction";
 
+
+
     private enum ListEditState {
         NOTE_LIST, SUB_FOLDER, CALL_RECORD_FOLDER
     };
@@ -104,6 +106,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
     private ListView mNotesListView;
 
     private Button mAddNewNote;
+
     private Button mMenuSet;
 
     private boolean mDispatch;
@@ -221,7 +224,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
         mNotesListView.setOnItemLongClickListener(this);
         mNotesListAdapter = new NotesListAdapter(this);
         mNotesListView.setAdapter(mNotesListAdapter);
-        mAddNewNote = (Button) findViewById(R.id.btn_new_note);
+        mAddNewNote =(Button) findViewById(R.id.fab);
         mAddNewNote.setOnClickListener(this);
         mAddNewNote.setOnTouchListener(new NewNoteOnTouchListener());
         mMenuSet = (Button) findViewById(R.id.btn_set);
@@ -589,7 +592,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_new_note:
+            case R.id.fab:
                 createNewNote();
                 break;
             default:

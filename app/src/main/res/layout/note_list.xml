@@ -56,6 +56,7 @@
         android:orientation="vertical"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 <!--app:layout_behavior 解决遮挡问题-->
+
         <TextView
             android:id="@+id/tv_title_bar"
             android:layout_width="fill_parent"

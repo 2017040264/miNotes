@@ -140,10 +140,14 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
     private final static int REQUEST_CODE_OPEN_NODE = 102;
     private final static int REQUEST_CODE_NEW_NODE  = 103;
 
+    // Activity 启动调用的第一个函数。主要是一些初始化工作，但是不要过于复杂，否则启动过慢，影响用户体验。
+    // saveInsanceState是保存的Activity状态，
+    // onSaveInsanceState()
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.note_list);
+
         initResources();
 
         /**
@@ -239,17 +243,32 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
         startAsyncNotesListQuery();
     }
 
+    // 主要是对变量的一些初始化
     private void initResources() {
+        // 使用ContentResolver调用ContentProvider提供的接口，对ContentProvider中的数据进行添加、删除、修改和查询操作时。
         mContentResolver = this.getContentResolver();
+
         mBackgroundQueryHandler = new BackgroundQueryHandler(this.getContentResolver());
+
+        // long 类型
         mCurrentFolderId = Notes.ID_ROOT_FOLDER;
+
+        // ListView 对应layout\note_ilist.xml的listview
         mNotesListView = (ListView) findViewById(R.id.notes_list);
+
         mNotesListView.addFooterView(LayoutInflater.from(this).inflate(R.layout.note_list_footer, null),
                 null, false);
+
+        // 参数是个监听器
         mNotesListView.setOnItemClickListener(new OnListItemClickListener());
+        // this代表当前类，在这里指的就是：setOnItemLongClickListener()
         mNotesListView.setOnItemLongClickListener(this);
+
+        // 布局适配器
         mNotesListAdapter = new NotesListAdapter(this);
         mNotesListView.setAdapter(mNotesListAdapter);
+
+        // 添加note按钮
         mAddNewNote =(Button) findViewById(R.id.fab);
         mAddNewNote.setOnClickListener(this);
         mAddNewNote.setOnTouchListener(new NewNoteOnTouchListener());
@@ -260,8 +279,14 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
         mDispatch = false;
         mDispatchY = 0;
         mOriginY = 0;
+
+        // textview  layout\note_list.xml中的TextView组件
         mTitleBar = (TextView) findViewById(R.id.tv_title_bar);
+
+        // ListEditState有三种参数（状态）
         mState = ListEditState.NOTE_LIST;
+
+        //  多选操作？？
         mModeCallBack = new ModeCallback();
     }
 

@@ -5,7 +5,7 @@
 1.修改app图标及名称
 2.想添加悬浮按钮，失败
 
-2021.1.1
+2021.1.1  
 1.修改layout\note_list.xml，引入androidx.coordinatorlayout.widget.CoordinatorLayout、
 com.google.android.material.appbar.AppBarLayout、
 androidx.appcompat.widget.Toolbar，主要实现toolbar。  

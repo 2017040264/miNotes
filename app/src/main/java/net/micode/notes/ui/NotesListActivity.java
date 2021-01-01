@@ -166,29 +166,45 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
     private void setAppInfoFromRawRes() {
         // SharedPreferences是一种轻量级的数据存储方式，采用键值对的存储方式。
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // private static final String PREFERENCE_ADD_INTRODUCTION = "net.micode.notes.introduction"
         if (!sp.getBoolean(PREFERENCE_ADD_INTRODUCTION, false)) {
+
+
+            //StringBuilder类也代表可变字符串对象。
+            // 实际上，StringBuilder和StringBuffer基本相似，两个类的构造器和方法也基本相同。
+            // 不同的是：StringBuffer是线程安全的，而StringBuilder则没有实现线程安全功能，所以性能略高
             StringBuilder sb = new StringBuilder();
+
             InputStream in = null;
+
             try {
+                // getResources().openRawResource() 这两个函数都是android的内部函数，用来读取资源
                  in = getResources().openRawResource(R.raw.introduction);
+
                 if (in != null) {
+
                     InputStreamReader isr = new InputStreamReader(in);
                     BufferedReader br = new BufferedReader(isr);
+
                     char [] buf = new char[1024];
                     int len = 0;
                     while ((len = br.read(buf)) > 0) {
                         sb.append(buf, 0, len);
                     }
                 } else {
+                    // private static final String TAG = "NotesListActivity";
                     Log.e(TAG, "Read introduction file error");
                     return;
                 }
             } catch (IOException e) {
+                //IO exception io异常
                 e.printStackTrace();
                 return;
             } finally {
                 if(in != null) {
                     try {
+                        //关闭输入流
                         in.close();
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
@@ -196,12 +212,19 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
                     }
                 }
             }
-
-            WorkingNote note = WorkingNote.createEmptyNote(this, Notes.ID_ROOT_FOLDER,
+            // WorkingNote.java文件
+             WorkingNote note = WorkingNote.createEmptyNote(this, Notes.ID_ROOT_FOLDER,
                     AppWidgetManager.INVALID_APPWIDGET_ID, Notes.TYPE_WIDGET_INVALIDE,
                     ResourceParser.RED);
+
             note.setWorkingText(sb.toString());
+
             if (note.saveNote()) {
+                // private static final String PREFERENCE_ADD_INTRODUCTION = "net.micode.notes.introduction";
+                // editor.putBoolean(“married”,false); //以键值对形式存储
+
+                // Set a boolean value in the preferences editor, to be written back once commit() or apply() are called.
+                // commit方法将添加的数据提交
                 sp.edit().putBoolean(PREFERENCE_ADD_INTRODUCTION, true).commit();
             } else {
                 Log.e(TAG, "Save introduction note error");

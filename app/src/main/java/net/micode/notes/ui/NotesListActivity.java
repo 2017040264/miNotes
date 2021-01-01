@@ -107,6 +107,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
     private Button mAddNewNote;
 
+    // 主界面菜单定义按钮
     private Button mMenuSet;
 
     private boolean mDispatch;
@@ -147,6 +148,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
         /**
          * Insert an introduction when user firstly use this application
+         * raw means orign
          */
         setAppInfoFromRawRes();
     }
@@ -162,6 +164,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
     }
 
     private void setAppInfoFromRawRes() {
+        // SharedPreferences是一种轻量级的数据存储方式，采用键值对的存储方式。
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         if (!sp.getBoolean(PREFERENCE_ADD_INTRODUCTION, false)) {
             StringBuilder sb = new StringBuilder();
@@ -205,7 +208,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
                 return;
             }
         }
-    }
+    } //end setAppInfoFromRawRes
 
     @Override
     protected void onStart() {
@@ -227,7 +230,10 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
         mAddNewNote =(Button) findViewById(R.id.fab);
         mAddNewNote.setOnClickListener(this);
         mAddNewNote.setOnTouchListener(new NewNoteOnTouchListener());
+
+        // 主页菜单按钮初始化，通过id绑定note_list中的button
         mMenuSet = (Button) findViewById(R.id.btn_set);
+
         mDispatch = false;
         mDispatchY = 0;
         mOriginY = 0;
@@ -258,6 +264,8 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
             mNotesListAdapter.setChoiceMode(true);
             mNotesListView.setLongClickable(false);
             mAddNewNote.setVisibility(View.GONE);
+
+            //设置按钮隐藏，布局文件中也要android:visibility="gone"，否则无效
             mMenuSet.setVisibility(View.GONE);
 
             View customView = LayoutInflater.from(NotesListActivity.this).inflate(
@@ -316,6 +324,8 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 //            closeOptionsMenu();
 //            mNotesListView.invalidate();
             mAddNewNote.setVisibility(View.VISIBLE);
+
+            // 设置按钮可见
             mMenuSet.setVisibility(View.VISIBLE);
             
             
@@ -578,7 +588,9 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
         if (data.getId() == Notes.ID_CALL_RECORD_FOLDER) {
             mState = ListEditState.CALL_RECORD_FOLDER;
             mAddNewNote.setVisibility(View.GONE);
+            //隐藏
             mMenuSet.setVisibility(View.GONE);
+
         } else {
             mState = ListEditState.SUB_FOLDER;
         }
@@ -712,7 +724,9 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
                 mCurrentFolderId = Notes.ID_ROOT_FOLDER;
                 mState = ListEditState.NOTE_LIST;
                 mAddNewNote.setVisibility(View.VISIBLE);
+                //可见。
                 mMenuSet.setVisibility(View.VISIBLE);
+
                 mTitleBar.setVisibility(View.GONE);
                 startAsyncNotesListQuery();
                 break;

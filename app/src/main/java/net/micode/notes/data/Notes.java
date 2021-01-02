@@ -18,6 +18,7 @@ package net.micode.notes.data;
 
 import android.net.Uri;
 public class Notes {
+
     public static final String AUTHORITY = "micode_notes";
     public static final String TAG = "Notes";
     public static final int TYPE_NOTE     = 0;
@@ -210,35 +211,35 @@ public class Notes {
 
 
         /**
-         * Generic data column, the meaning is {@link #MIMETYPE} specific, used for
+         * Generic data column, the meaning is {@link #MIME_TYPE} specific, used for
          * integer data type
          * <P> Type: INTEGER </P>
          */
         public static final String DATA1 = "data1";
 
         /**
-         * Generic data column, the meaning is {@link #MIMETYPE} specific, used for
+         * Generic data column, the meaning is {@link #MIME_TYPE} specific, used for
          * integer data type
          * <P> Type: INTEGER </P>
          */
         public static final String DATA2 = "data2";
 
         /**
-         * Generic data column, the meaning is {@link #MIMETYPE} specific, used for
+         * Generic data column, the meaning is {@link #MIME_TYPE} specific, used for
          * TEXT data type
          * <P> Type: TEXT </P>
          */
         public static final String DATA3 = "data3";
 
         /**
-         * Generic data column, the meaning is {@link #MIMETYPE} specific, used for
+         * Generic data column, the meaning is {@link #MIME_TYPE} specific, used for
          * TEXT data type
          * <P> Type: TEXT </P>
          */
         public static final String DATA4 = "data4";
 
         /**
-         * Generic data column, the meaning is {@link #MIMETYPE} specific, used for
+         * Generic data column, the meaning is {@link #MIME_TYPE} specific, used for
          * TEXT data type
          * <P> Type: TEXT </P>
          */

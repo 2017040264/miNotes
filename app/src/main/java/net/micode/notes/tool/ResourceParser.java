@@ -63,7 +63,7 @@ public class ResourceParser {
         public static int getNoteTitleBgResource(int id) {
             return BG_EDIT_TITLE_RESOURCES[id];
         }
-    }
+    }  // end NoteBgResources
 
     public static int getDefaultBgId(Context context) {
         if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(

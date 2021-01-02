@@ -107,6 +107,8 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
     private Button mAddNewNote;
 
+    //private FloatingActionButton mAddNewNote;
+
     // 主界面菜单定义按钮
     private Button mMenuSet;
 
@@ -268,10 +270,13 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
         mNotesListAdapter = new NotesListAdapter(this);
         mNotesListView.setAdapter(mNotesListAdapter);
 
-        // 添加note按钮
+        // 添加note按钮 FloatingActionButton
+        //mAddNewNote =(FloatingActionButton) findViewById(R.id.fab1);
         mAddNewNote =(Button) findViewById(R.id.fab);
         mAddNewNote.setOnClickListener(this);
         mAddNewNote.setOnTouchListener(new NewNoteOnTouchListener());
+
+
 
         // 主页菜单按钮初始化，通过id绑定note_list中的button
         mMenuSet = (Button) findViewById(R.id.btn_set);

@@ -86,6 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="false"
+            android:visibility="visible"
             android:layout_gravity="bottom|center" />
 
 
@@ -93,12 +94,13 @@
 
 
 
-    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:background="@android:drawable/ic_input_add"
-        app:srcCompat="@android:drawable/ic_input_add"/>-->
+        android:visibility="visible"
+        app:srcCompat="@android:drawable/ic_input_add"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

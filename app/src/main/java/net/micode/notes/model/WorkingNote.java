@@ -39,8 +39,10 @@ public class WorkingNote {
 
     // Note Id
     private long mNoteId;
+
     // Note content
     private String mContent;
+
     // Note mode
     private int mMode;
 
@@ -62,6 +64,7 @@ public class WorkingNote {
 
     private boolean mIsDeleted;
 
+    // 内部定义的接口
     private NoteSettingChangedListener mNoteSettingStatusListener;
 
     public static final String[] DATA_PROJECTION = new String[] {
@@ -127,6 +130,7 @@ public class WorkingNote {
     }
 
     private void loadNote() {
+        // Crusor 该接口提供对数据库查询返回的结果集的随机读写访问。
         Cursor cursor = mContext.getContentResolver().query(
                 ContentUris.withAppendedId(Notes.CONTENT_NOTE_URI, mNoteId), NOTE_PROJECTION, null,
                 null, null);

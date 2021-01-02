@@ -35,40 +35,77 @@ import java.util.ArrayList;
 
 
 public class Note {
+    // ContenrValues 是Andriod内部类
+    // ContentValues 和HashTable类似都是一种存储的机制 但是两者最大的区别就在于，
+    // contenvalues只能存储基本类型的数据，像string，int之类的，不能存储对象这种东西，而HashTable却可以存储对象。
     private ContentValues mNoteDiffValues;
+
+    // NoteData Note的内部类
     private NoteData mNoteData;
+
     private static final String TAG = "Note";
+
     /**
      * Create a new note id for adding a new note to databases
+     * synchronized是Java中的关键字，是一种同步锁
+     * 修改一个静态的方法，其作用的范围是整个静态方法，作用的对象是这个类的所有对象
      */
     public static synchronized long getNewNoteId(Context context, long folderId) {
         // Create a new note in the database
+        // 在往数据库中插入数据的时候，首先应该有一个ContentValues的对象
         ContentValues values = new ContentValues();
+
+        // 获得系统时间，单位为毫秒
         long createdTime = System.currentTimeMillis();
+
+        // Created data for note or folder
         values.put(NoteColumns.CREATED_DATE, createdTime);
+
+        // Latest modified(调整) date
         values.put(NoteColumns.MODIFIED_DATE, createdTime);
+
+        // The file type: folder or note
+        // TYPE_NOTE,TYPE_FOLDER,TYPE_SYSTEM 三种
         values.put(NoteColumns.TYPE, Notes.TYPE_NOTE);
+
+        // Sign to indicate local modified or not 是否局部修改标志
         values.put(NoteColumns.LOCAL_MODIFIED, 1);
+
+        // The parent's id for note or folder 父类的id
         values.put(NoteColumns.PARENT_ID, folderId);
+
+        // Uri to query all notes and folders
         Uri uri = context.getContentResolver().insert(Notes.CONTENT_NOTE_URI, values);
 
         long noteId = 0;
         try {
+            // uri.getPathSegments() : Gets the decoded path segments. Lsit<String>类型
+            // Long.valueOf(参数)是将参数转换成long的包装类——Long；也就是把基本数据类型转换成包装类
             noteId = Long.valueOf(uri.getPathSegments().get(1));
         } catch (NumberFormatException e) {
+            // tring TAG = "Note"
             Log.e(TAG, "Get note id error :" + e.toString());
             noteId = 0;
         }
+
         if (noteId == -1) {
             throw new IllegalStateException("Wrong note id:" + noteId);
         }
-        return noteId;
-    }
 
+        return noteId;
+    } // end getNewNoteId
+
+
+    // 构造类
     public Note() {
+
+        // android 内部类，是一个ArrayMap类型
+        // 存储数据
         mNoteDiffValues = new ContentValues();
+
         mNoteData = new NoteData();
     }
+
 
     public void setNoteValue(String key, String value) {
         mNoteDiffValues.put(key, value);
@@ -96,23 +133,40 @@ public class Note {
         mNoteData.setCallData(key, value);
     }
 
+    // 这个函数存在递归？没有。
+    // return 中的mNoteData.isLocalModified()函数是NoreData类的，而该函数属于Note类
     public boolean isLocalModified() {
         return mNoteDiffValues.size() > 0 || mNoteData.isLocalModified();
     }
 
+    /**
+     * 该函数用于同步Note
+     * @param context
+     * @param noteId
+     * @return boolean
+     */
+
     public boolean syncNote(Context context, long noteId) {
+
         if (noteId <= 0) {
             throw new IllegalArgumentException("Wrong note id:" + noteId);
         }
 
+        // 未修改，不用同步，返回true
         if (!isLocalModified()) {
             return true;
         }
 
         /**
-         * In theory, once data changed, the note should be updated on {@link NoteColumns#LOCAL_MODIFIED} and
+         * In theory(理论上), once data changed, the note should be updated on {@link NoteColumns#LOCAL_MODIFIED} and
          * {@link NoteColumns#MODIFIED_DATE}. For data safety, though update note fails, we also update the
          * note data info
+         *
+         * context.getContentResolver().update()
+         * Update row(s) in a content URI. If the content provider supports transactions the update will be atomic.
+         *
+         * ContentUris.withAppendedId(Uri contentUri, long id)
+         *Appends the given ID to the end of the path.
          */
         if (context.getContentResolver().update(
                 ContentUris.withAppendedId(Notes.CONTENT_NOTE_URI, noteId), mNoteDiffValues, null,
@@ -122,6 +176,7 @@ public class Note {
         }
         mNoteDiffValues.clear();
 
+        // 修改但是没能push给ContentResolver,同步失败
         if (mNoteData.isLocalModified()
                 && (mNoteData.pushIntoContentResolver(context, noteId) == null)) {
             return false;
@@ -131,8 +186,10 @@ public class Note {
     }
 
     private class NoteData {
+
         private long mTextDataId;
 
+        // 存储结构
         private ContentValues mTextDataValues;
 
         private long mCallDataId;
@@ -141,6 +198,7 @@ public class Note {
 
         private static final String TAG = "NoteData";
 
+        // 构造函数
         public NoteData() {
             mTextDataValues = new ContentValues();
             mCallDataValues = new ContentValues();
@@ -168,6 +226,7 @@ public class Note {
 
         void setCallData(String key, String value) {
             mCallDataValues.put(key, value);
+            // Sign to indicate local modified or not
             mNoteDiffValues.put(NoteColumns.LOCAL_MODIFIED, 1);
             mNoteDiffValues.put(NoteColumns.MODIFIED_DATE, System.currentTimeMillis());
         }
@@ -179,6 +238,7 @@ public class Note {
         }
 
         Uri pushIntoContentResolver(Context context, long noteId) {
+
             /**
              * Check for safety
              */
@@ -186,13 +246,21 @@ public class Note {
                 throw new IllegalArgumentException("Wrong note id:" + noteId);
             }
 
+            //ContentProviderOperation 类： 数据库批量操作方法
             ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
+            // ContentProviderOperation.Builder 类: Used to add parameters to a ContentProviderOperation
             ContentProviderOperation.Builder builder = null;
 
             if(mTextDataValues.size() > 0) {
+
                 mTextDataValues.put(DataColumns.NOTE_ID, noteId);
+
                 if (mTextDataId == 0) {
+                    // String MIME_TYPE
+                    //CONTENT_ITEM_TYPE = "vnd.android.cursor.item/text_note"
                     mTextDataValues.put(DataColumns.MIME_TYPE, TextNote.CONTENT_ITEM_TYPE);
+
+                    // 插入数据
                     Uri uri = context.getContentResolver().insert(Notes.CONTENT_DATA_URI,
                             mTextDataValues);
                     try {
@@ -203,9 +271,19 @@ public class Note {
                         return null;
                     }
                 } else {
+                    // CONTENT_DATA_URI = Uri.parse("content://" + AUTHORITY + "/data")
+                    // ContentProviderOperation.newUpdate():
+                    // Create a Builder suitable for building an operation that will invoke ContentProvider#update.
                     builder = ContentProviderOperation.newUpdate(ContentUris.withAppendedId(
                             Notes.CONTENT_DATA_URI, mTextDataId));
+
+                    //  withValues (ContentValues  value)
+                     // This method will replace any previously defined values for the contained keys,
+                    // but it will not replace any back-reference requests
                     builder.withValues(mTextDataValues);
+
+                    // build()
+                    // Create a ContentProviderOperation from this Builder.
                     operationList.add(builder.build());
                 }
                 mTextDataValues.clear();
@@ -235,8 +313,10 @@ public class Note {
 
             if (operationList.size() > 0) {
                 try {
+                    // AUTHORITY = "micode_notes"
                     ContentProviderResult[] results = context.getContentResolver().applyBatch(
                             Notes.AUTHORITY, operationList);
+                    // CONTENT_NOTE_URI = Uri.parse("content://" + AUTHORITY + "/note"
                     return (results == null || results.length == 0 || results[0] == null) ? null
                             : ContentUris.withAppendedId(Notes.CONTENT_NOTE_URI, noteId);
                 } catch (RemoteException e) {
@@ -248,6 +328,9 @@ public class Note {
                 }
             }
             return null;
-        }
-    }
+
+        }// end pushIntoContentResolver
+
+    } //end class NoteData
+
 }

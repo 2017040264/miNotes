@@ -33,8 +33,10 @@ import net.micode.notes.tool.ResourceParser.NoteBgResources;
 
 
 public class WorkingNote {
+
     // Note for the working note
     private Note mNote;
+
     // Note Id
     private long mNoteId;
     // Note content

@@ -53,11 +53,15 @@ public class Notes {
 
     /**
      * Uri to query all notes and folders
+     * AUTHORITY = "micode_notes";
+     * Uri.parse() 参数符合RFC 2396的编码URI
+     * Uri 代表要操作的数据，Android上可用的每种资源 - 图像、视频片段等都可以用Uri来表示。
      */
     public static final Uri CONTENT_NOTE_URI = Uri.parse("content://" + AUTHORITY + "/note");
 
     /**
      * Uri to query data
+     *
      */
     public static final Uri CONTENT_DATA_URI = Uri.parse("content://" + AUTHORITY + "/data");
 

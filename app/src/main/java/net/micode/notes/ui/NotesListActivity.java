@@ -60,6 +60,11 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
+
 import net.micode.notes.R;
 import net.micode.notes.data.Notes;
 import net.micode.notes.data.Notes.NoteColumns;
@@ -71,6 +76,7 @@ import net.micode.notes.tool.ResourceParser;
 import net.micode.notes.ui.NotesListAdapter.AppWidgetAttribute;
 import net.micode.notes.widget.NoteWidgetProvider_2x;
 import net.micode.notes.widget.NoteWidgetProvider_4x;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -105,9 +111,9 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
     private ListView mNotesListView;
 
-    private Button mAddNewNote;
+    //private Button mAddNewNote;
 
-    //private FloatingActionButton mAddNewNote;
+    private FloatingActionButton mAddNewNote;
 
     // 主界面菜单定义按钮
     private Button mMenuSet;
@@ -149,6 +155,10 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.note_list);
+
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+       //setSupportActionBar(toolbar);
 
         initResources();
 
@@ -247,6 +257,9 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
     // 主要是对变量的一些初始化
     private void initResources() {
+
+
+
         // 使用ContentResolver调用ContentProvider提供的接口，对ContentProvider中的数据进行添加、删除、修改和查询操作时。
         mContentResolver = this.getContentResolver();
 
@@ -271,8 +284,8 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
         mNotesListView.setAdapter(mNotesListAdapter);
 
         // 添加note按钮 FloatingActionButton
-        //mAddNewNote =(FloatingActionButton) findViewById(R.id.fab1);
-        mAddNewNote =(Button) findViewById(R.id.fab);
+        mAddNewNote =(FloatingActionButton) findViewById(R.id.fab1);
+        //mAddNewNote =(Button) findViewById(R.id.fab);
         mAddNewNote.setOnClickListener(this);
         mAddNewNote.setOnTouchListener(new NewNoteOnTouchListener());
 
@@ -445,9 +458,13 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN: {
+                case MotionEvent.ACTION_DOWN: {// 当屏幕检测到第一个触点按下之后就会触发到这个事件
+
+                    // 得到窗口
                     Display display = getWindowManager().getDefaultDisplay();
+                    // 整个窗口的高度，包括状态栏、标题栏和布局
                     int screenHeight = display.getHeight();
+                    // 获得悬浮按钮控件的高度
                     int newNoteViewHeight = mAddNewNote.getHeight();
                     int start = screenHeight - newNoteViewHeight;
                     int eventY = start + (int) event.getY();
@@ -482,6 +499,9 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
                     break;
                 }
                 case MotionEvent.ACTION_MOVE: {
+                    //当触点在屏幕上移动时触发，触点在屏幕上停留也是会触发的，
+                    // 主要是由于它的灵敏度很高，
+                    // 而我们的手指又不可能完全静止（即使我们感觉不到移动，但其实我们的手指也在不停地抖动）
                     if (mDispatch) {
                         mDispatchY += (int) event.getY() - mOriginY;
                         event.setLocation(event.getX(), mDispatchY);
@@ -657,7 +677,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.fab:
+            case R.id.fab1:
                 createNewNote();
                 break;
             default:
@@ -778,7 +798,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
                 mState = ListEditState.NOTE_LIST;
                 mAddNewNote.setVisibility(View.VISIBLE);
                 //可见。
-                mMenuSet.setVisibility(View.VISIBLE);
+               // mMenuSet.setVisibility(View.VISIBLE);
 
                 mTitleBar.setVisibility(View.GONE);
                 startAsyncNotesListQuery();
@@ -1059,4 +1079,11 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
     public void OnOpenMenu(View view) {
 		openOptionsMenu();
 	}
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.note_list, menu);
+//        return true;
+//    }
 }

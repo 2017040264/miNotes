@@ -16,6 +16,7 @@
 -->
 
 <resources>
+
     <style name="TextAppearanceSuper">
         <item name="android:textSize">@dimen/text_font_size_super</item>
         <item name="android:textColorLink">#0000ff</item>

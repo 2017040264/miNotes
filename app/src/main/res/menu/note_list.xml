@@ -19,12 +19,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="net.micode.notes.ui.NotesListActivity">
+    tools:context="net.micode.notes.ui.NotesListActivity"
+    app:showAsAction="never">
+
     <item
         android:id="@+id/menu_new_folder"
         android:orderInCategory="0"
         android:title="@string/menu_create_folder"
-        app:showAsAction="never"/>
+        />
 
     <item
         android:id="@+id/menu_export_text"

@@ -20,17 +20,17 @@
     android:layout_height="fill_parent"
     android:background="@drawable/list_background"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <!--/*整体页面*/-->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
-
+        <!--/*标题栏部分*/-->
         <LinearLayout
             android:id="@+id/note_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
-
+            <!--时间信息部分-->
             <TextView
                 android:id="@+id/tv_modified_date"
                 android:layout_width="0dip"
@@ -39,14 +39,14 @@
                 android:layout_gravity="left|center_vertical"
                 android:layout_marginRight="8dip"
                 android:textAppearance="@style/TextAppearanceSecondaryItem" />
-
+            <!--闹钟图标-->
             <ImageView
                 android:id="@+id/iv_alert_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/title_alert" />
-
+            <!--   闹钟图标后面的已过期文字-->
             <TextView
                 android:id="@+id/tv_alert_date"
                 android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
                 android:layout_marginLeft="2dip"
                 android:layout_marginRight="8dip"
                 android:textAppearance="@style/TextAppearanceSecondaryItem" />
-            
+            <!-- 菜单按钮-->
             <ImageButton
                 android:id="@+id/menu_more"
                 android:layout_width="wrap_content"
@@ -63,28 +63,29 @@
                 android:layout_gravity="center"
                 android:onClick="OnOpenMenu"
                 android:background="@drawable/ic_menu_more_dark" />
-
+            <!--背景板选择图标-->
             <ImageView
-        		android:id="@+id/btn_set_bg_color"
+                android:id="@+id/btn_set_bg_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:layout_gravity="center"
                 android:background="@drawable/bg_btn_set_color" />
         </LinearLayout>
-
+        <!--便签内容部分-->
         <LinearLayout
             android:id="@+id/sv_note_edit"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical">
 
-         <!-- 这个ImafeView的作用是？：分隔组件-->
+            <!-- 这个ImafeView的作用是？：分隔组件-->
+            <!--可以用来设置上边距（第一行与顶部的距离）-->
             <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="7dip"
                 android:background="@drawable/bg_color_btn_mask" />
-
+            <!--内容部分-->
             <ScrollView
                 android:layout_width="fill_parent"
                 android:layout_height="0dip"
@@ -94,7 +95,7 @@
                 android:layout_gravity="left|top"
                 android:fadingEdgeLength="0dip">
 
-<!--因为Scrollview的子元素只能有一个，因此加入一个LinearLayout，把组件都放到LinearLayout中-->
+                <!--因为Scrollview的子元素只能有一个，因此加入一个LinearLayout，把组件都放到LinearLayout中-->
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
@@ -104,14 +105,14 @@
                         android:id="@+id/note_edit_view"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left|top"
-                        android:background="@null"
                         android:autoLink="all"
+                        android:background="@null"
+                        android:gravity="left|top"
+                        android:lineSpacingMultiplier="1.2"
                         android:linksClickable="false"
                         android:minLines="12"
-                        android:textAppearance="@style/TextAppearancePrimaryItem"
-                        android:lineSpacingMultiplier="1.2" />
-
+                        android:textAppearance="@style/TextAppearancePrimaryItem" />
+                    <!--暂时还不知道什么作用-->
                     <LinearLayout
                         android:id="@+id/note_edit_list"
                         android:layout_width="fill_parent"
@@ -123,7 +124,7 @@
             </ScrollView>
 
 
-
+            <!--底边距-->
             <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="7dip"
@@ -132,13 +133,13 @@
     </LinearLayout>
 
 
-
+    <!--    暂时没发现什么用-->
     <ImageView
         android:layout_height="43dip"
         android:layout_width="wrap_content"
         android:background="@drawable/bg_color_btn_mask"
         android:layout_gravity="top|right" />
-
+    <!--背景颜色选择界面，每一组包括一个色彩图片和一个打钩图标-->
     <LinearLayout
         android:id="@+id/note_bg_color_selector"
         android:layout_width="wrap_content"
@@ -252,7 +253,7 @@
                 android:src="@drawable/selected" />
         </FrameLayout>
     </LinearLayout>
-
+    <!--文字大小选择界面，每一组包括文字、图标和一个打钩图标-->
     <LinearLayout
         android:id="@+id/font_size_selector"
         android:layout_width="fill_parent"

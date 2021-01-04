@@ -77,6 +77,8 @@ import net.micode.notes.ui.NotesListAdapter.AppWidgetAttribute;
 import net.micode.notes.widget.NoteWidgetProvider_2x;
 import net.micode.notes.widget.NoteWidgetProvider_4x;
 
+import org.litepal.LitePal;
+import org.litepal.tablemanager.Connector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -160,6 +162,10 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
 
 
         toolbar = findViewById(R.id.toolbar);
+
+        //注意：只需第一次创建或升级本地数据库，第二次运行就注释掉
+        Connector.getDatabase();
+        Toast.makeText(NotesListActivity.this, "创建数据库成功", Toast.LENGTH_LONG).show();
 
 
         initResources();
@@ -255,6 +261,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
     protected void onStart() {
         super.onStart();
         setSupportActionBar(toolbar);
+
         startAsyncNotesListQuery();
     }
 

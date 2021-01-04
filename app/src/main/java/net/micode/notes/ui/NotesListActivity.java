@@ -165,7 +165,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
 
         //注意：只需第一次创建或升级本地数据库，第二次运行就注释掉
         Connector.getDatabase();
-        Toast.makeText(NotesListActivity.this, "创建数据库成功", Toast.LENGTH_LONG).show();
+        //Toast.makeText(NotesListActivity.this, "创建数据库成功", Toast.LENGTH_LONG).show();
 
 
         initResources();

@@ -16,6 +16,7 @@
 
 package net.micode.notes.ui;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -64,6 +65,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import net.micode.notes.R;
 import net.micode.notes.data.Notes;
@@ -122,6 +125,9 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
 
     private Toolbar toolbar;
 
+    private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
+
     private boolean mDispatch;
 
     private int mOriginY;
@@ -158,7 +164,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.note_list);
+        setContentView(R.layout.main_activity);
 
 
         toolbar = findViewById(R.id.toolbar);
@@ -166,6 +172,15 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
         //注意：只需第一次创建或升级本地数据库，第二次运行就注释掉
         Connector.getDatabase();
         //Toast.makeText(NotesListActivity.this, "创建数据库成功", Toast.LENGTH_LONG).show();
+
+        //获取抽屉布局实例
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        //获取菜单控件实例
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        //无法直接通过findViewById方法获取header布局id
+        View v = navigationView.getHeaderView(0);
 
 
         initResources();
@@ -261,6 +276,18 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
     protected void onStart() {
         super.onStart();
         setSupportActionBar(toolbar);
+
+        //获取到ActionBar的实例
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            //通过HomeAsUp来让导航按钮显示出来
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            //设置Indicator来添加一个点击图标（默认图标是一个返回的箭头）
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
+
+        //设置默认选中第一个
+        navigationView.setCheckedItem(R.id.nav_home);
 
         startAsyncNotesListQuery();
     }
@@ -915,6 +942,11 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home: {
+                //打开侧滑栏，注意要与xml中保持一致START
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
+            }
             case R.id.menu_new_folder: {
                 showCreateOrModifyFolderDialog(true);
                 break;

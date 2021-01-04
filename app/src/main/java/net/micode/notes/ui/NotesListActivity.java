@@ -158,7 +158,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-       //setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
         initResources();
 
@@ -1080,10 +1080,10 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 		openOptionsMenu();
 	}
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.note_list, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.note_list, menu);
+        return true;
+    }
 }

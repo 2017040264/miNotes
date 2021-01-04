@@ -84,7 +84,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 
-public class NotesListActivity extends Activity implements OnClickListener, OnItemLongClickListener {
+public class NotesListActivity extends AppCompatActivity implements OnClickListener, OnItemLongClickListener {
     private static final int FOLDER_NOTE_LIST_QUERY_TOKEN = 0;
 
     private static final int FOLDER_LIST_QUERY_TOKEN      = 1;
@@ -116,7 +116,9 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
     private FloatingActionButton mAddNewNote;
 
     // 主界面菜单定义按钮
-    private Button mMenuSet;
+    //private Button mMenuSet;
+
+    private Toolbar toolbar;
 
     private boolean mDispatch;
 
@@ -157,8 +159,8 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
         setContentView(R.layout.note_list);
 
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        toolbar = findViewById(R.id.toolbar);
+
 
         initResources();
 
@@ -252,6 +254,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
     @Override
     protected void onStart() {
         super.onStart();
+        setSupportActionBar(toolbar);
         startAsyncNotesListQuery();
     }
 
@@ -292,7 +295,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
 
 
         // 主页菜单按钮初始化，通过id绑定note_list中的button
-        mMenuSet = (Button) findViewById(R.id.btn_set);
+        //mMenuSet = (Button) findViewById(R.id.btn_set);
 
         mDispatch = false;
         mDispatchY = 0;
@@ -332,7 +335,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
             mAddNewNote.setVisibility(View.GONE);
 
             //设置按钮隐藏，布局文件中也要android:visibility="gone"，否则无效
-            mMenuSet.setVisibility(View.GONE);
+           // mMenuSet.setVisibility(View.GONE);
 
             View customView = LayoutInflater.from(NotesListActivity.this).inflate(
                     R.layout.note_list_dropdown_menu, null);
@@ -392,7 +395,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
             mAddNewNote.setVisibility(View.VISIBLE);
 
             // 设置按钮可见
-            mMenuSet.setVisibility(View.VISIBLE);
+           // mMenuSet.setVisibility(View.VISIBLE);
             
             
             
@@ -662,7 +665,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
             mState = ListEditState.CALL_RECORD_FOLDER;
             mAddNewNote.setVisibility(View.GONE);
             //隐藏
-            mMenuSet.setVisibility(View.GONE);
+          //  mMenuSet.setVisibility(View.GONE);
 
         } else {
             mState = ListEditState.SUB_FOLDER;
@@ -798,7 +801,7 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
                 mState = ListEditState.NOTE_LIST;
                 mAddNewNote.setVisibility(View.VISIBLE);
                 //可见。
-               // mMenuSet.setVisibility(View.VISIBLE);
+                //mMenuSet.setVisibility(View.VISIBLE);
 
                 mTitleBar.setVisibility(View.GONE);
                 startAsyncNotesListQuery();
@@ -1075,10 +1078,11 @@ public class NotesListActivity extends Activity implements OnClickListener, OnIt
         }
         return false;
     }
-    
-    public void OnOpenMenu(View view) {
-		openOptionsMenu();
-	}
+
+
+//    public void OnOpenMenu(View view) {
+//		openOptionsMenu();
+//	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -20,32 +20,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="net.micode.notes.ui.NotesListActivity"
-    app:showAsAction="never">
+    >
 
     <item
         android:id="@+id/menu_new_folder"
         android:orderInCategory="0"
         android:title="@string/menu_create_folder"
+        app:showAsAction="never"
         />
 
     <item
         android:id="@+id/menu_export_text"
         android:title="@string/menu_export_text"
-        android:orderInCategory="1"/>
+        android:orderInCategory="1"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menu_sync"
         android:title="@string/menu_sync"
-        android:orderInCategory="2"/>
+        android:orderInCategory="2"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menu_setting"
         android:title="@string/menu_setting"
-        android:orderInCategory="3"/>
+        android:orderInCategory="3"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menu_search"
         android:title="@string/menu_search"
-        android:orderInCategory="4"/>
+        android:orderInCategory="4"
+        app:showAsAction="never"/>
 
 </menu>

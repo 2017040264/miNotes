@@ -79,6 +79,7 @@
             android:layout_height="fill_parent"
             android:orientation="vertical">
 
+         <!-- 这个ImafeView的作用是？：分隔组件-->
             <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="7dip"
@@ -93,6 +94,7 @@
                 android:layout_gravity="left|top"
                 android:fadingEdgeLength="0dip">
 
+<!--因为Scrollview的子元素只能有一个，因此加入一个LinearLayout，把组件都放到LinearLayout中-->
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
@@ -120,12 +122,16 @@
                 </LinearLayout>
             </ScrollView>
 
+
+
             <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="7dip"
                 android:background="@drawable/bg_color_btn_mask" />
         </LinearLayout>
     </LinearLayout>
+
+
 
     <ImageView
         android:layout_height="43dip"

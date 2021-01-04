@@ -16,3 +16,5 @@ androidx.appcompat.widget.Toolbar，主要实现toolbar。
 ## 韩    建  本地提交
 
 ## 韩青松 本地提交
+1.阅读并layout\note_list.xml 添加注释；
+2.尝试设计初始页面弹出左边弹窗菜单。

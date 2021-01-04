@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "net.micode.notes"
-        minSdkVersion 27
+        minSdkVersion 26
         targetSdkVersion 30
     }
 

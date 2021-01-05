@@ -62,6 +62,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBar;
@@ -127,6 +128,9 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
 
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
+
+    // 采用静态变量来存储当前登录的账号
+    public static String currentUserId;
 
     private boolean mDispatch;
 
@@ -287,7 +291,60 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
         }
 
         //设置默认选中第一个
-        navigationView.setCheckedItem(R.id.nav_home);
+        navigationView.setCheckedItem(R.id.nav_edit);
+        //设置菜单项的监听事件
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                //逻辑页面处理
+                mDrawerLayout.closeDrawers();
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_edit:
+                        //每个菜单项的点击事件，通过Intent实现点击item简单实现活动页面的跳转。
+                        if (!TextUtils.isEmpty(currentUserId)) {
+                            Intent editIntent = new Intent(NotesListActivity.this, UserDetailActivity.class);
+                            editIntent.putExtra("user_edit_id", currentUserId);
+                            startActivityForResult(editIntent, 3);
+                        } else {
+                            Intent loginIntent = new Intent(NotesListActivity.this, LoginActivity.class);
+                            loginIntent.putExtra("loginStatus", "请先登录后才能操作！");
+                            startActivityForResult(loginIntent, 1);
+                        }
+                        break;
+
+
+//                    case R.id.nav_exit:
+//                        SweetAlertDialog mDialog = new SweetAlertDialog(NotesListActivity.this, SweetAlertDialog.NORMAL_TYPE)
+//                                .setTitleText("提示")
+//                                .setContentText("您是否要退出？")
+//                                .setCustomImage(null)
+//                                .setCancelText("取消")
+//                                .setConfirmText("确定")
+//                                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+//                                    @Override
+//                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+//                                        sweetAlertDialog.dismiss();
+//                                    }
+//                                }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+//                                    @Override
+//                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+//                                        sweetAlertDialog.dismiss();
+//                                        ActivityCollector.finishAll();
+//                                    }
+//                                });
+//                        mDialog.show();
+//                        break;
+                    case R.id.nav_switch:
+                        // 切换账号
+                        Intent intent = new Intent(NotesListActivity.this, LoginActivity.class);
+                        // 登录请求码是1
+                        startActivityForResult(intent, 1);
+                        break;
+                    default:
+                }
+                return true;
+            }
+        });
 
         startAsyncNotesListQuery();
     }

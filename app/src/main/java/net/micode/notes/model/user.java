@@ -1,6 +1,8 @@
 package net.micode.notes.model;
 
-public class user {
+import org.litepal.crud.LitePalSupport;
+
+public class user extends LitePalSupport {
 
     // 用户id
     private String userid;

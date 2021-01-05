@@ -430,7 +430,7 @@ public class NoteEditActivity extends Activity implements OnClickListener,
         if (id == R.id.btn_set_bg_color) {
             mNoteBgColorSelector.setVisibility(View.VISIBLE);
             findViewById(sBgSelectorSelectionMap.get(mWorkingNote.getBgColorId())).setVisibility(
-                    -                    View.VISIBLE);
+                    View.VISIBLE);
         } else if (sBgSelectorBtnsMap.containsKey(id)) {
             findViewById(sBgSelectorSelectionMap.get(mWorkingNote.getBgColorId())).setVisibility(
                     View.GONE);
@@ -525,6 +525,8 @@ public class NoteEditActivity extends Activity implements OnClickListener,
                         });
                 builder.setNegativeButton(android.R.string.cancel, null);
                 builder.show();
+                break;
+            case R.id.menu_insert_img:
                 break;
             case R.id.menu_font_size:
                 mFontSizeSelector.setVisibility(View.VISIBLE);
@@ -870,9 +872,8 @@ public class NoteEditActivity extends Activity implements OnClickListener,
     private void showToast(int resId, int duration) {
         Toast.makeText(this, resId, duration).show();
     }
-    
 
     public void OnOpenMenu(View view) {
-		openOptionsMenu();
-	}
+        openOptionsMenu();
+    }
 }

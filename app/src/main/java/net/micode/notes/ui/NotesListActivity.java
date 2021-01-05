@@ -1082,7 +1082,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
         }
 
     }
-
+    /*查询目标文件夹*/
     private void startQueryDestinationFolders() {
         String selection = NoteColumns.TYPE + "=? AND " + NoteColumns.PARENT_ID + "<>? AND " + NoteColumns.ID + "<>?";
         selection = (mState == ListEditState.NOTE_LIST) ? selection:
@@ -1122,7 +1122,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
 //    public void OnOpenMenu(View view) {
 //		openOptionsMenu();
 //	}
-
+    /*右上角菜单按钮*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

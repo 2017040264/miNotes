@@ -101,6 +101,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_2x_info" />
         </receiver>
+
         <receiver
             android:name=".widget.NoteWidgetProvider_4x"
             android:label="@string/app_widget4x4" >
@@ -140,7 +141,7 @@
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Holo.Light" >
         </activity>
-
+        <!--同步-->
         <service
             android:name="net.micode.notes.gtask.remote.GTaskSyncService"
             android:exported="false" >

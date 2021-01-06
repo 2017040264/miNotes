@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="TextAppearanceSuper">
         <item name="android:textSize">@dimen/text_font_size_super</item>
@@ -66,5 +66,8 @@
     <style name="NoteActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
         <item name="android:displayOptions" />
         <item name="android:visibility">gone</item>
+    </style>
+    <style name="MyDatePickerDialogTheme" parent="android:Theme.Material.Light.Dialog" tools:targetApi="lollipop">
+        <item name="android:colorAccent">@color/colorPrimary</item>
     </style>
 </resources>

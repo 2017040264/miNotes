@@ -19,7 +19,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="menu_edit">Home</string>
     <string name="menu_switch">Switch</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_exit">exit</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>

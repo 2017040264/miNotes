@@ -35,4 +35,11 @@ dependencies {
 
     //添加图片圆形化控件的依赖库
     implementation 'de.hdodenhof:circleimageview:2.1.0'
+
+    // 添加Material Dialogs弹窗美化的依赖库
+    // core版：可以创建basic, list, single/multi choice, progress, input等弹框。
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+
+    // 添加第3方弹出窗
+    implementation 'com.github.f0ris.sweetalert:library:1.6.2'
 }

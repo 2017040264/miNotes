@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "输入不能为空", Toast.LENGTH_SHORT).show();
                 } else {
                     //此处用litepal去查询数据库，查询用户输入的账号和密码是否登录成功，其中账号是唯一标识
-                    List<user> userInfos = LitePal.where("userAccount = ?", numId).find(user.class);
+                    List<user> userInfos = LitePal.where("userid = ?", numId).find(user.class);
                     System.out.println(userInfos);
                     Log.d("登录界面", "onClick: " + userInfos);
                     if(userInfos.size() == 0) {

@@ -1121,6 +1121,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
         return true;
     }
 
+    /*左边菜单实现*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

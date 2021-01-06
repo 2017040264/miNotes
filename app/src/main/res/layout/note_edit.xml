@@ -29,7 +29,8 @@
         <LinearLayout
             android:id="@+id/note_title"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
             <!--时间信息部分-->
             <TextView
                 android:id="@+id/tv_modified_date"
@@ -84,7 +85,7 @@
             <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="7dip"
-                android:background="@drawable/bg_color_btn_mask" />
+                 />
             <!--内容部分-->
             <ScrollView
                 android:layout_width="fill_parent"
@@ -112,7 +113,7 @@
                         android:linksClickable="false"
                         android:minLines="12"
                         android:textAppearance="@style/TextAppearancePrimaryItem" />
-                    <!--暂时还不知道什么作用-->
+
                     <LinearLayout
                         android:id="@+id/note_edit_list"
                         android:layout_width="fill_parent"

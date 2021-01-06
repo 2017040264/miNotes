@@ -30,6 +30,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -57,12 +59,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.ActionBar;
@@ -74,6 +78,8 @@ import net.micode.notes.data.Notes;
 import net.micode.notes.data.Notes.NoteColumns;
 import net.micode.notes.gtask.remote.GTaskSyncService;
 import net.micode.notes.model.WorkingNote;
+import net.micode.notes.model.user;
+import net.micode.notes.tool.ActivityCollector;
 import net.micode.notes.tool.BackupUtils;
 import net.micode.notes.tool.DataUtils;
 import net.micode.notes.tool.ResourceParser;
@@ -83,12 +89,16 @@ import net.micode.notes.widget.NoteWidgetProvider_4x;
 
 import org.litepal.LitePal;
 import org.litepal.tablemanager.Connector;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.List;
 
 public class NotesListActivity extends AppCompatActivity implements OnClickListener, OnItemLongClickListener {
     private static final int FOLDER_NOTE_LIST_QUERY_TOKEN = 0;
@@ -131,6 +141,13 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
 
     // 采用静态变量来存储当前登录的账号
     public static String currentUserId;
+
+    private TextView userNickName, userSignature;
+
+    private ImageView userAvatar;
+
+    // 记录读者账号，相当于Session来使用
+    public String currentUserNickName, currentSignature, currentImagePath;
 
     private boolean mDispatch;
 
@@ -196,15 +213,15 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
         setAppInfoFromRawRes();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK
-                && (requestCode == REQUEST_CODE_OPEN_NODE || requestCode == REQUEST_CODE_NEW_NODE)) {
-            mNotesListAdapter.changeCursor(null);
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == RESULT_OK
+//                && (requestCode == REQUEST_CODE_OPEN_NODE || requestCode == REQUEST_CODE_NEW_NODE)) {
+//            mNotesListAdapter.changeCursor(null);
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
+//    }
 
     private void setAppInfoFromRawRes() {
         // SharedPreferences是一种轻量级的数据存储方式，采用键值对的存储方式。
@@ -313,27 +330,27 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
                         break;
 
 
-//                    case R.id.nav_exit:
-//                        SweetAlertDialog mDialog = new SweetAlertDialog(NotesListActivity.this, SweetAlertDialog.NORMAL_TYPE)
-//                                .setTitleText("提示")
-//                                .setContentText("您是否要退出？")
-//                                .setCustomImage(null)
-//                                .setCancelText("取消")
-//                                .setConfirmText("确定")
-//                                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-//                                    @Override
-//                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-//                                        sweetAlertDialog.dismiss();
-//                                    }
-//                                }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-//                                    @Override
-//                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-//                                        sweetAlertDialog.dismiss();
-//                                        ActivityCollector.finishAll();
-//                                    }
-//                                });
-//                        mDialog.show();
-//                        break;
+                    case R.id.nav_exit:
+                        SweetAlertDialog mDialog = new SweetAlertDialog(NotesListActivity.this, SweetAlertDialog.NORMAL_TYPE)
+                                .setTitleText("提示")
+                                .setContentText("您是否要退出？")
+                                .setCustomImage(null)
+                                .setCancelText("取消")
+                                .setConfirmText("确定")
+                                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismiss();
+                                    }
+                                }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismiss();
+                                        ActivityCollector.finishAll();
+                                    }
+                                });
+                        mDialog.show();
+                        break;
                     case R.id.nav_switch:
                         // 切换账号
                         Intent intent = new Intent(NotesListActivity.this, LoginActivity.class);
@@ -346,7 +363,115 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
             }
         });
 
+        // 加载上次登录的账号，起到记住会话的功能
+        String inputText = load();
+        if (!TextUtils.isEmpty(inputText) && TextUtils.isEmpty(currentUserId)) {
+            currentUserId = inputText;
+        }
+        View v = navigationView.getHeaderView(0);
+        userNickName = v.findViewById(R.id.text_nickname);
+        userSignature = v.findViewById(R.id.text_signature);
+        userAvatar = v.findViewById(R.id.icon_image);
+        if (!TextUtils.isEmpty(currentUserId)) {
+            List<user> userInfos = LitePal.where("userid = ?", currentUserId).find(user.class);
+            userNickName.setText(userInfos.get(0).getUsername());
+            userSignature.setText(userInfos.get(0).getUserSignature());
+            currentImagePath = userInfos.get(0).getUserimagePath();
+            System.out.println("主界面初始化数据：" + userInfos);
+            diplayImage(currentImagePath);
+        } else {
+            userNickName.setText("请先登录");
+            userSignature.setText("请先登录");
+            userAvatar.setImageResource(R.drawable.xiaomi);
+        }
+
         startAsyncNotesListQuery();
+    }
+
+    // 加载数据
+    public String load() {
+        //读取我们之前存储到data文件中的账号，方便下次启动app时直接使用
+        FileInputStream in = null;
+        BufferedReader reader = null;
+        StringBuilder content = new StringBuilder();
+        try {
+            in = openFileInput("data");
+            System.out.println("是否读到文件内容" + in);
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return content.toString();
+    }
+
+    // 通过登录来接收值
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        View v = navigationView.getHeaderView(0);
+
+        userNickName = v.findViewById(R.id.text_nickname);
+        userSignature = v.findViewById(R.id.text_signature);
+        userAvatar=v.findViewById(R.id.icon_image);
+
+        switch (requestCode) {
+            case 1: // 切换账号登录后来主界面
+                if (resultCode == RESULT_OK) {
+                    Toast.makeText(NotesListActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                    currentUserId = data.getStringExtra("userID");
+                    currentUserNickName = data.getStringExtra("userNick");
+                    currentSignature = data.getStringExtra("userSign");
+                    currentImagePath = data.getStringExtra("imagePath");
+                    Log.d(TAG, "当前用户的账号为：" + currentUserId);
+                    Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
+                    Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
+                    Log.d(TAG, "当前用户的头像地址为: " + currentImagePath);
+                    userNickName.setText(currentUserNickName);
+                    userSignature.setText(currentSignature);
+                    diplayImage(currentImagePath);
+                }
+                break;
+            case 3: // 从个人信息返回来的数据，要更新导航栏中的数据，包括昵称，签名，图片路径
+                if (resultCode == RESULT_OK) {
+                    currentUserNickName = data.getStringExtra("nickName");
+                    currentSignature = data.getStringExtra("signature");
+                    currentImagePath = data.getStringExtra("imagePath");
+                    Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
+                    Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
+                    Log.d(TAG, "当前用户的图片路径为： " + currentImagePath);
+                    System.out.println("当前用户的图片路径7777777为： " + currentImagePath);
+                    userNickName.setText(currentUserNickName);
+                    userSignature.setText(currentSignature);
+                    diplayImage(currentImagePath);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    // 解析、展示图片
+    private void diplayImage(String imagePath) {
+        if (!TextUtils.isEmpty(imagePath)) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            userAvatar.setImageBitmap(bitmap);
+        } else {
+            userAvatar.setImageResource(R.drawable.xiaomi);
+        }
     }
 
     // 主要是对变量的一些初始化

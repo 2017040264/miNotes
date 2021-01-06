@@ -27,14 +27,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,14 +57,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+
 import net.micode.notes.R;
 import net.micode.notes.data.Notes;
 import net.micode.notes.data.Notes.TextNote;
 import net.micode.notes.model.WorkingNote;
 import net.micode.notes.model.WorkingNote.NoteSettingChangedListener;
+import net.micode.notes.tool.ContentToSpannableString;
 import net.micode.notes.tool.DataUtils;
+import net.micode.notes.tool.GlideImageEngine;
 import net.micode.notes.tool.ResourceParser;
 import net.micode.notes.tool.ResourceParser.TextAppearanceResources;
+import net.micode.notes.tool.UriToPathUtil;
 import net.micode.notes.ui.DateTimePickerDialog.OnDateTimeSetListener;
 import net.micode.notes.ui.NoteEditText.OnTextViewChangeListener;
 import net.micode.notes.widget.NoteWidgetProvider_2x;
@@ -67,6 +78,7 @@ import net.micode.notes.widget.NoteWidgetProvider_4x;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -136,7 +148,9 @@ public class NoteEditActivity extends Activity implements OnClickListener,
 
     private SharedPreferences mSharedPrefs;
     private int mFontSizeId;
-
+    private List<Uri> mSelected;
+    private GlideImageEngine glideImageEngine;
+    private int REQUEST_CODE_CHOOSE = 23;
     private static final String PREFERENCE_FONT_SIZE = "pref_font_size";
 
     private static final int SHORTCUT_ICON_TITLE_MAX_LEN = 10;
@@ -148,6 +162,8 @@ public class NoteEditActivity extends Activity implements OnClickListener,
 
     private String mUserQuery;
     private Pattern mPattern;
+    private  String content ;
+    private SpannableString spannableString ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -274,7 +290,10 @@ public class NoteEditActivity extends Activity implements OnClickListener,
         if (mWorkingNote.getCheckListMode() == TextNote.MODE_CHECK_LIST) {
             switchToListMode(mWorkingNote.getContent());
         } else {
-            mNoteEditor.setText(getHighlightQueryResult(mWorkingNote.getContent(), mUserQuery));
+            content = mWorkingNote.getContent();
+            spannableString = ContentToSpannableString.Content2SpanStr(NoteEditActivity.this, content);
+            mNoteEditor.setMovementMethod(LinkMovementMethod.getInstance());
+            mNoteEditor.append(spannableString);
             mNoteEditor.setSelection(mNoteEditor.getText().length());
         }
         for (Integer id : sBgSelectorSelectionMap.keySet()) {
@@ -527,6 +546,7 @@ public class NoteEditActivity extends Activity implements OnClickListener,
                 builder.show();
                 break;
             case R.id.menu_insert_img:
+                callGallery();
                 break;
             case R.id.menu_font_size:
                 mFontSizeSelector.setVisibility(View.VISIBLE);
@@ -778,7 +798,11 @@ public class NoteEditActivity extends Activity implements OnClickListener,
                 mWorkingNote.setWorkingText(mWorkingNote.getContent().replace(TAG_UNCHECKED + " ",
                         ""));
             }
-            mNoteEditor.setText(getHighlightQueryResult(mWorkingNote.getContent(), mUserQuery));
+            content = mWorkingNote.getContent();
+            spannableString = ContentToSpannableString.Content2SpanStr(NoteEditActivity.this, content);
+
+            mNoteEditor.setMovementMethod(LinkMovementMethod.getInstance());
+            mNoteEditor.append(spannableString);
             mEditTextList.setVisibility(View.GONE);
             mNoteEditor.setVisibility(View.VISIBLE);
         }
@@ -871,6 +895,58 @@ public class NoteEditActivity extends Activity implements OnClickListener,
 
     private void showToast(int resId, int duration) {
         Toast.makeText(this, resId, duration).show();
+    }
+    private void callGallery(){
+        glideImageEngine = new GlideImageEngine();
+
+        Matisse.from(NoteEditActivity.this)
+                .choose(MimeType.ofAll())
+                .countable(true)
+                .maxSelectable(9)
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(glideImageEngine)
+                .forResult(REQUEST_CODE_CHOOSE);
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(resultCode == RESULT_OK){
+            if(data != null){
+                if(requestCode == 1){
+
+                }else if(requestCode == REQUEST_CODE_CHOOSE){
+                    mSelected = Matisse.obtainResult(data);
+                    Uri nSelected = mSelected.get(0);
+
+                    //用Uri的string来构造spanStr，不知道能不能获得图片
+                    //  ## +  string +  ##  来标识图片  <img src=''>
+
+                    //SpannableString spanStr = new SpannableString(nSelected.toString());
+                    SpannableString spanStr = new SpannableString("<img src='" + nSelected.toString() + "'/>");
+                    Log.d("图片Uri",nSelected.toString());
+                    String path = UriToPathUtil.getRealFilePath(this,nSelected);
+                    Log.d("图片Path",path);
+
+                    try{
+
+                        //根据Uri 获得 drawable资源
+                        Drawable drawable = Drawable.createFromStream(this.getContentResolver().openInputStream(nSelected),null);
+                        drawable.setBounds(0,0,2 * drawable.getIntrinsicWidth(),2 * drawable.getIntrinsicHeight());
+                        //BitmapDrawable bd = (BitmapDrawable) drawable;
+                        //Bitmap bp = bd.getBitmap();
+                        //bp.setDensity(160);
+                        ImageSpan span = new ImageSpan(drawable,ImageSpan.ALIGN_BASELINE);
+                        spanStr.setSpan(span,0,spanStr.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        Log.d("spanString：",spanStr.toString());
+                        int cursor = mNoteEditor.getSelectionStart();
+                        mNoteEditor.getText().insert(cursor, spanStr);
+                    }catch (Exception FileNotFoundException){
+                        Log.d("异常","无法根据Uri找到图片资源");
+                    }
+                    //Drawable drawable = NoteNewActivity.this.getResources().getDrawable(nSelected);
+                }
+            }
+        }
     }
 
     public void OnOpenMenu(View view) {

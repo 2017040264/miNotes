@@ -291,9 +291,13 @@ public class NoteEditActivity extends Activity implements OnClickListener,
             switchToListMode(mWorkingNote.getContent());
         } else {
             content = mWorkingNote.getContent();
+            if(!TextUtils.isEmpty(content)){
+
             spannableString = ContentToSpannableString.Content2SpanStr(NoteEditActivity.this, content);
             mNoteEditor.setMovementMethod(LinkMovementMethod.getInstance());
-            mNoteEditor.append(spannableString);
+            mNoteEditor.append(spannableString);  }
+            else
+            mNoteEditor.setText(getHighlightQueryResult(mWorkingNote.getContent(),mUserQuery));
             mNoteEditor.setSelection(mNoteEditor.getText().length());
         }
         for (Integer id : sBgSelectorSelectionMap.keySet()) {

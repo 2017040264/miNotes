@@ -13,6 +13,10 @@ androidx.appcompat.widget.Toolbar，主要实现toolbar。
 3.尝试修改主界面菜单内容及位置。阅读NotesListActivity.java,menu\note_list.xml,
 初步设想要将同步功能删除，因为它的同步用到了谷歌，现在谷歌对中国大陆并不支持，故设想将其删除。
 
+2021.1.7
+
+litepal:ORM:对象关系模型，编程语言是面向对象的，数据库是关系型数据库，二者之间的映射就是对象关系模型。
+
 ## 韩    建  本地提交
 
 ## 韩青松 本地提交

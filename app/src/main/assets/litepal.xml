@@ -4,10 +4,12 @@
     <dbname value="miNotes"></dbname>
 
     <!--用于指定数据库版本号-->
-    <version value="2" ></version>
+    <version value="3" ></version>
 
     <!--用于指定所有的映射模型列表,声明要配置的映射模型类，注意一定要使用完整的类名-->
     <list>
         <mapping class="net.micode.notes.model.user"></mapping>
+        <mapping class="net.micode.notes.model.dataa"></mapping>
+        <mapping class="net.micode.notes.model.notee"></mapping>
     </list>
 </litepal>

@@ -285,7 +285,7 @@ public class NoteEditActivity extends Activity implements OnClickListener,
     }
 
     private void initNoteScreen() {
-        mNoteEditor.setTextAppearance(this, TextAppearanceResources
+        mNoteEditor.setTextAppearance(TextAppearanceResources
                 .getTexAppearanceResource(mFontSizeId));
         if (mWorkingNote.getCheckListMode() == TextNote.MODE_CHECK_LIST) {
             switchToListMode(mWorkingNote.getContent());

@@ -17,6 +17,7 @@
 package net.micode.notes.data;
 
 import android.net.Uri;
+
 public class Notes {
 
     public static final String AUTHORITY = "micode_notes";

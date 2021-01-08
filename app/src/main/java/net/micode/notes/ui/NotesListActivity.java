@@ -81,6 +81,7 @@ import net.micode.notes.model.WorkingNote;
 import net.micode.notes.model.user;
 import net.micode.notes.tool.ActivityCollector;
 import net.micode.notes.tool.BackupUtils;
+import net.micode.notes.tool.BaseActivity;
 import net.micode.notes.tool.DataUtils;
 import net.micode.notes.tool.ResourceParser;
 import net.micode.notes.ui.NotesListAdapter.AppWidgetAttribute;
@@ -100,7 +101,7 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 
-public class NotesListActivity extends AppCompatActivity implements OnClickListener, OnItemLongClickListener {
+public class NotesListActivity extends BaseActivity implements OnClickListener, OnItemLongClickListener {
     private static final int FOLDER_NOTE_LIST_QUERY_TOKEN = 0;
 
     private static final int FOLDER_LIST_QUERY_TOKEN      = 1;
@@ -272,6 +273,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
                     }
                 }
             }
+
             // WorkingNote.java文件
              WorkingNote note = WorkingNote.createEmptyNote(this, Notes.ID_ROOT_FOLDER,
                     AppWidgetManager.INVALID_APPWIDGET_ID, Notes.TYPE_WIDGET_INVALIDE,

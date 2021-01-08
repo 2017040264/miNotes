@@ -304,7 +304,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
             //通过HomeAsUp来让导航按钮显示出来
             actionBar.setDisplayHomeAsUpEnabled(true);
             //设置Indicator来添加一个点击图标（默认图标是一个返回的箭头）
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic__menu);
         }
 
         //设置默认选中第一个
@@ -381,8 +381,8 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
             diplayImage(currentImagePath);
         } else {
             userNickName.setText("请先登录");
-            userSignature.setText("请先登录");
-            userAvatar.setImageResource(R.drawable.xiaomi);
+
+            userAvatar.setImageResource(R.drawable.user);
         }
 
         startAsyncNotesListQuery();
@@ -470,7 +470,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             userAvatar.setImageBitmap(bitmap);
         } else {
-            userAvatar.setImageResource(R.drawable.xiaomi);
+            userAvatar.setImageResource(R.drawable.user);
         }
     }
 

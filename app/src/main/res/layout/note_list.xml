@@ -35,7 +35,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#03A9F4"
-            app:title="@string/app_name"
+            app:title="小米便签"
+            app:titleTextAppearance="@style/ToolbarTextsize"
+            app:theme="@style/ToolBarTheme"
             app:popupTheme="@style/Theme.MyApplication.PopupOverlay" >
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -44,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/colorGray"
+        android:background="@color/white"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 <!--app:layout_behavior 解决遮挡问题-->
 
@@ -67,6 +69,7 @@
             android:cacheColorHint="@null"
             android:listSelector="@android:color/transparent"
             android:divider="@null"
+            android:dividerHeight="4dp"
             android:fadingEdge="none" />
 
 
@@ -105,9 +108,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:visibility="visible"
-        app:backgroundTint="#ff0"
-        app:rippleColor="#fF8000"
-        app:srcCompat="@android:drawable/ic_input_add"
+        app:backgroundTint="#03A9F4"
+        app:srcCompat="@drawable/tianjia"
         />
 <!-- app:backgroundTint:背景颜色   -->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

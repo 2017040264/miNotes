@@ -38,11 +38,13 @@ public class NotesListAdapter extends CursorAdapter {
     private int mNotesCount;
     private boolean mChoiceMode;
 
+    // 桌面小组件属性
     public static class AppWidgetAttribute {
         public int widgetId;
         public int widgetType;
     };
 
+    // 构造函数
     public NotesListAdapter(Context context) {
         super(context, null);
         mSelectedIndex = new HashMap<Integer, Boolean>();

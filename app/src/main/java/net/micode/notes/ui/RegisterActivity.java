@@ -3,12 +3,15 @@ package net.micode.notes.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import net.micode.notes.R;
 import net.micode.notes.model.user;
@@ -20,6 +23,8 @@ import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    //顶部标题栏的toolbar
+    private Toolbar registerToolbar;
     // 注册账号，即userid
     private EditText reg_userAccount;
     // 注册密码，即userpassword
@@ -33,6 +38,15 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        registerToolbar = findViewById(R.id.register_toolbar);
+        registerToolbar.setTitle("小米便签");
+        setSupportActionBar(registerToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_return_left2);
+        }
 
         reg_userAccount = findViewById(R.id.register_userAccount);
         reg_userPwd = findViewById(R.id.register_pwd);
@@ -81,6 +95,17 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    //顶部标题栏的返回按钮
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home)
+        {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

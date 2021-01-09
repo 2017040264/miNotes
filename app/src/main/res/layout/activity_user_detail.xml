@@ -11,14 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/userData_toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:background="@color/colorPrimary"
-            app:titleTextColor="@color/white"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:layout_height="wrap_content"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/userData_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="#03A9F4"
+                app:title="小米便签"
+                app:titleTextAppearance="@style/ToolbarTextsize"
+                app:theme="@style/ToolBarTheme"
+                app:popupTheme="@style/Theme.MyApplication.PopupOverlay" >
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
         <!--
                 以水平方向为例，当layout_width都设置为match_parent时，
                 layout_weight比重值越大，占的比例越小；

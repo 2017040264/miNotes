@@ -74,7 +74,7 @@ public class UserDetailActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_return_left);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_return_left2);
         }
 
         layout_avatar = findViewById(R.id.lay_avatar);

@@ -11,11 +11,11 @@
             />
         <item
             android:id="@+id/nav_switch"
-            android:icon="@drawable/icon_app"
-            android:title="@string/menu_switch" />
+            android:icon="@drawable/log_on"
+            android:title="登录账号" />
         <item
             android:id="@+id/nav_exit"
-            android:icon="@drawable/icon_app"
-            android:title="@string/menu_exit" />
+            android:icon="@drawable/quit"
+            android:title="退出" />
     </group>
 </menu>

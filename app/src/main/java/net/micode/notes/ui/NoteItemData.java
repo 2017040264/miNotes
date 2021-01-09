@@ -28,6 +28,7 @@ import net.micode.notes.tool.DataUtils;
 
 public class NoteItemData {
     static final String [] PROJECTION = new String [] {
+            NoteColumns.USERID,
         NoteColumns.ID,
         NoteColumns.ALERTED_DATE,
         NoteColumns.BG_COLOR_ID,
@@ -41,19 +42,19 @@ public class NoteItemData {
         NoteColumns.WIDGET_ID,
         NoteColumns.WIDGET_TYPE,
     };
-
-    private static final int ID_COLUMN                    = 0;
-    private static final int ALERTED_DATE_COLUMN          = 1;
-    private static final int BG_COLOR_ID_COLUMN           = 2;
-    private static final int CREATED_DATE_COLUMN          = 3;
-    private static final int HAS_ATTACHMENT_COLUMN        = 4;
-    private static final int MODIFIED_DATE_COLUMN         = 5;
-    private static final int NOTES_COUNT_COLUMN           = 6;
-    private static final int PARENT_ID_COLUMN             = 7;
-    private static final int SNIPPET_COLUMN               = 8;
-    private static final int TYPE_COLUMN                  = 9;
-    private static final int WIDGET_ID_COLUMN             = 10;
-    private static final int WIDGET_TYPE_COLUMN           = 11;
+    private static final int USERID                       = 0;
+    private static final int ID_COLUMN                    = 1;
+    private static final int ALERTED_DATE_COLUMN          = 2;
+    private static final int BG_COLOR_ID_COLUMN           = 3;
+    private static final int CREATED_DATE_COLUMN          = 4;
+    private static final int HAS_ATTACHMENT_COLUMN        = 5;
+    private static final int MODIFIED_DATE_COLUMN         = 6;
+    private static final int NOTES_COUNT_COLUMN           = 7;
+    private static final int PARENT_ID_COLUMN             = 8;
+    private static final int SNIPPET_COLUMN               = 9;
+    private static final int TYPE_COLUMN                  = 10;
+    private static final int WIDGET_ID_COLUMN             = 11;
+    private static final int WIDGET_TYPE_COLUMN           = 12;
 
     private long mId;
     private long mAlertDate;

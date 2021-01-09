@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,7 +22,8 @@ import net.micode.notes.R;
 import net.micode.notes.model.user;
 
 import org.litepal.LitePal;
-
+import android.database.sqlite.SQLiteDatabase;
+import net.micode.notes.data.NotesDatabaseHelper;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -79,28 +81,55 @@ public class LoginActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(numId) || TextUtils.isEmpty(pwd)) {
                     Toast.makeText(LoginActivity.this, "输入不能为空", Toast.LENGTH_SHORT).show();
                 } else {
-                    //此处用litepal去查询数据库，查询用户输入的账号和密码是否登录成功，其中账号是唯一标识
-                    List<user> userInfos = LitePal.where("userid = ?", numId).find(user.class);
-                    System.out.println(userInfos);
-                    Log.d("登录界面", "onClick: " + userInfos);
-                    if(userInfos.size() == 0) {
-                        // 提示用户注册
+                    NotesDatabaseHelper dbHelper=new NotesDatabaseHelper(LoginActivity.this);
+                    SQLiteDatabase  sqliteDatabase = dbHelper.getWritableDatabase();
+                    Cursor cursor = sqliteDatabase.rawQuery("select * from user where userid=?",new String[]{numId});
+                    if(cursor.getCount()==0)
+                    {
                         Toast.makeText(LoginActivity.this, "账号不存在，请先注册！", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // 验证密码是否正确
-                        if(!pwd.equals(userInfos.get(0).getUserpassword())) {
+                    }
+                    else {
+                        cursor.moveToFirst();
+                        if(!pwd.equals(cursor.getString(cursor.getColumnIndex("userpassword"))))
+                        {
                             Toast.makeText(LoginActivity.this, "请确认是否输入正确的密码?", Toast.LENGTH_SHORT).show();
-                        } else {
+                        }
+                        else {
+                            //Toast.makeText(LoginActivity.this, "成功登陆！", Toast.LENGTH_SHORT).show();
                             // 登录成功，返回到主界面，主界面要保存登录的账号，便于查询读者信息，主界面使用onActivityResult来接收得到的账号
                             Intent intent = new Intent(LoginActivity.this, NotesListActivity.class);
                             intent.putExtra("userID", numId);
-                            intent.putExtra("userNick", userInfos.get(0).getUsername());
-                            intent.putExtra("userSign", userInfos.get(0).getUserSignature());
-                            intent.putExtra("imagePath", userInfos.get(0).getUserimagePath());
+                            intent.putExtra("userNick", cursor.getString(cursor.getColumnIndex("username")));
+                            intent.putExtra("userSign", cursor.getString(cursor.getColumnIndex("userSignature")));
+                            intent.putExtra("imagePath", cursor.getString(cursor.getColumnIndex("userimagePath")));
                             setResult(RESULT_OK, intent);
                             finish();
                         }
                     }
+//                    //此处用litepal去查询数据库，查询用户输入的账号和密码是否登录成功，其中账号是唯一标识
+//                    List<user> userInfos = LitePal.where("userid = ?", numId).find(user.class);
+//                    System.out.println(userInfos);
+//                    Log.d("登录界面", "onClick: " + userInfos);
+//                    if(userInfos.size() == 0) {
+//                        // 提示用户注册
+//                        Toast.makeText(LoginActivity.this, "账号不存在，请先注册！", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        // 验证密码是否正确
+//                        if(!pwd.equals(userInfos.get(0).getUserpassword())) {
+//                            Toast.makeText(LoginActivity.this, "请确认是否输入正确的密码?", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            // 登录成功，返回到主界面，主界面要保存登录的账号，便于查询读者信息，主界面使用onActivityResult来接收得到的账号
+//                            Intent intent = new Intent(LoginActivity.this, NotesListActivity.class);
+//                            intent.putExtra("userID", numId);
+//                            intent.putExtra("userNick", userInfos.get(0).getUsername());
+//                            intent.putExtra("userSign", userInfos.get(0).getUserSignature());
+//                            intent.putExtra("imagePath", userInfos.get(0).getUserimagePath());
+//                            setResult(RESULT_OK, intent);
+//                            finish();
+//                        }
+//                    }
+                    //关闭数据库
+                    sqliteDatabase.close();
                 }
             }
         });

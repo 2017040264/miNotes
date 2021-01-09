@@ -30,20 +30,36 @@ import net.micode.notes.data.Notes.NoteColumns;
 public class NotesDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "note.db";
 
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
+
+
 
     public interface TABLE {
         public static final String NOTE = "note";
 
         public static final String DATA = "data";
+
+        public static final String USER = "user";
     }
 
     private static final String TAG = "NotesDatabaseHelper";
 
     private static NotesDatabaseHelper mInstance;
 
+    private static final String CREATE_USER_SQL=
+            "CREATE TABLE " + TABLE.USER + "(userid TEXT PRIMARY KEY," +
+                    "username TEXT NOT NULL DEFAULT ''," +
+                    "userpassword TEXT NOT NULL DEFAULT ''," +
+                    "userbirthday TEXT NOT NULL DEFAULT ''," +
+                    "usersex TEXT NOT NULL DEFAULT ''," +
+                    "userSignature TEXT NOT NULL DEFAULT ''," +
+                    "userimagePath TEXT NOT NULL DEFAULT ''" +
+                    ")";
+
+
     private static final String CREATE_NOTE_TABLE_SQL =
         "CREATE TABLE " + TABLE.NOTE + "(" +
+                "userid TEXT NOT NULL DEFAULT ''," +
             NoteColumns.ID + " INTEGER PRIMARY KEY," +
             NoteColumns.PARENT_ID + " INTEGER NOT NULL DEFAULT 0," +
             NoteColumns.ALERTED_DATE + " INTEGER NOT NULL DEFAULT 0," +
@@ -65,6 +81,7 @@ public class NotesDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_DATA_TABLE_SQL =
         "CREATE TABLE " + TABLE.DATA + "(" +
+                "userid TEXT NOT NULL DEFAULT ''," +
             DataColumns.ID + " INTEGER PRIMARY KEY," +
             DataColumns.MIME_TYPE + " TEXT NOT NULL," +
             DataColumns.NOTE_ID + " INTEGER NOT NULL DEFAULT 0," +
@@ -210,6 +227,7 @@ public class NotesDatabaseHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+
     public void createNoteTable(SQLiteDatabase db) {
         db.execSQL(CREATE_NOTE_TABLE_SQL);
         reCreateNoteTableTriggers(db);
@@ -287,17 +305,24 @@ public class NotesDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(DATA_UPDATE_NOTE_CONTENT_ON_DELETE_TRIGGER);
     }
 
-    static synchronized NotesDatabaseHelper getInstance(Context context) {
+     static synchronized NotesDatabaseHelper getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new NotesDatabaseHelper(context);
         }
         return mInstance;
     }
 
+    // 创建用户表
+    public void createUserTable(SQLiteDatabase db)
+    {
+        db.execSQL(CREATE_USER_SQL);
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         createNoteTable(db);
         createDataTable(db);
+        createUserTable(db);
     }
 
     @Override

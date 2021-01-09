@@ -30,15 +30,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="50dp"
             android:background="#03A9F4"
+<<<<<<< HEAD
+
+            app:popupTheme="@style/Theme.MyApplication.PopupOverlay"
+            app:title="@string/app_name">
+
+=======
             app:title="小米便签"
             app:titleTextAppearance="@style/ToolbarTextsize"
             app:theme="@style/ToolBarTheme"
             app:popupTheme="@style/Theme.MyApplication.PopupOverlay" >
+>>>>>>> 3b1c4d5bc4fdacbafb170fab3d5dd5fbf8391892
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

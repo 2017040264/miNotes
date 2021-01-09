@@ -65,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity{
                     // 判断两次输入的密码是否匹配，匹配则写入数据库，并且结束当前活动，自动返回登录界面
                     if(userPwd.equals(secondPwd)) {
                         Cursor cursor = sqliteDatabase.rawQuery("select * from user where userid=?",new String[]{userId});
+                        Cursor cursor1=sqliteDatabase.rawQuery("select * from user",null);
                         if(cursor.getCount()>0)
                         {
                             Toast.makeText(RegisterActivity.this, "当前账号已被注册，请重新输入账号", Toast.LENGTH_SHORT).show();
@@ -74,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity{
                             ContentValues values = new ContentValues();
                             // b. 向该对象中插入键值对
                             values.put("userid", userId);
-                            values.put("username", "用户"+(cursor.getCount()+1));
+                            values.put("username", "用户"+(cursor1.getCount()+1));
                             values.put("userpassword",secondPwd);
                             values.put("userbirthday","待完善");
                             values.put("usersex","待完善");

@@ -33,6 +33,7 @@ import net.micode.notes.R;
 import net.micode.notes.data.Notes.DataColumns;
 import net.micode.notes.data.Notes.NoteColumns;
 import net.micode.notes.data.NotesDatabaseHelper.TABLE;
+import net.micode.notes.ui.NotesListActivity;
 
 
 public class NotesProvider extends ContentProvider {
@@ -95,8 +96,15 @@ public class NotesProvider extends ContentProvider {
         String id = null;
         switch (mMatcher.match(uri)) {
             case URI_NOTE:
-                c = db.query(TABLE.NOTE, projection, selection, selectionArgs, null, null,
+                c = db.query(TABLE.NOTE, projection, "userid=?", new String[]{NotesListActivity.currentUserId}, null, null,
                         sortOrder);
+                // 参数1：（String）表名
+                // 参数2：（String[]）要查询的列名
+                // 参数3：（String）查询条件
+                // 参数4：（String[]）查询条件的参数
+                // 参数5：（String）对查询的结果进行分组
+                // 参数6：（String）对分组的结果进行限制
+                // 参数7：（String）对查询的结果进行排序
                 break;
             case URI_NOTE_ITEM:
                 id = uri.getPathSegments().get(1);
@@ -104,7 +112,7 @@ public class NotesProvider extends ContentProvider {
                         + parseSelection(selection), selectionArgs, null, null, sortOrder);
                 break;
             case URI_DATA:
-                c = db.query(TABLE.DATA, projection, selection, selectionArgs, null, null,
+                c = db.query(TABLE.DATA, projection, "userid=?", new String[]{NotesListActivity.currentUserId}, null, null,
                         sortOrder);
                 break;
             case URI_DATA_ITEM:
@@ -151,7 +159,11 @@ public class NotesProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+
+        String userid=null;
+        userid=NotesListActivity.currentUserId;
         SQLiteDatabase db = mHelper.getWritableDatabase();
+        values.put("userid",userid);
         long dataId = 0, noteId = 0, insertedId = 0;
         switch (mMatcher.match(uri)) {
             case URI_NOTE:

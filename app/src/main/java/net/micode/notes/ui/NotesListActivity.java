@@ -435,46 +435,51 @@ public class NotesListActivity extends BaseActivity implements OnClickListener, 
     // 通过登录来接收值
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        View v = navigationView.getHeaderView(0);
+        if (resultCode == RESULT_OK
+                && (requestCode == REQUEST_CODE_OPEN_NODE || requestCode == REQUEST_CODE_NEW_NODE)) {
+            mNotesListAdapter.changeCursor(null);
+       } else {
+            super.onActivityResult(requestCode, resultCode, data);
+            View v = navigationView.getHeaderView(0);
 
-        userNickName = v.findViewById(R.id.text_nickname);
-        userSignature = v.findViewById(R.id.text_signature);
-        userAvatar=v.findViewById(R.id.icon_image);
+            userNickName = v.findViewById(R.id.text_nickname);
+            userSignature = v.findViewById(R.id.text_signature);
+            userAvatar = v.findViewById(R.id.icon_image);
 
-        switch (requestCode) {
-            case 1: // 切换账号登录后来主界面
-                if (resultCode == RESULT_OK) {
-                    Toast.makeText(NotesListActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                    currentUserId = data.getStringExtra("userID");
-                    currentUserNickName = data.getStringExtra("userNick");
-                    currentSignature = data.getStringExtra("userSign");
-                    currentImagePath = data.getStringExtra("imagePath");
-                    Log.d(TAG, "当前用户的账号为：" + currentUserId);
-                    Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
-                    Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
-                    Log.d(TAG, "当前用户的头像地址为: " + currentImagePath);
-                    userNickName.setText(currentUserNickName);
-                    userSignature.setText(currentSignature);
-                    diplayImage(currentImagePath);
-                }
-                break;
-            case 3: // 从个人信息返回来的数据，要更新导航栏中的数据，包括昵称，签名，图片路径
-                if (resultCode == RESULT_OK) {
-                    currentUserNickName = data.getStringExtra("nickName");
-                    currentSignature = data.getStringExtra("signature");
-                    currentImagePath = data.getStringExtra("imagePath");
-                    Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
-                    Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
-                    Log.d(TAG, "当前用户的图片路径为： " + currentImagePath);
-                    System.out.println("当前用户的图片路径7777777为： " + currentImagePath);
-                    userNickName.setText(currentUserNickName);
-                    userSignature.setText(currentSignature);
-                    diplayImage(currentImagePath);
-                }
-                break;
-            default:
-                break;
+            switch (requestCode) {
+                case 1: // 切换账号登录后来主界面
+                    if (resultCode == RESULT_OK) {
+                        Toast.makeText(NotesListActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                        currentUserId = data.getStringExtra("userID");
+                        currentUserNickName = data.getStringExtra("userNick");
+                        currentSignature = data.getStringExtra("userSign");
+                        currentImagePath = data.getStringExtra("imagePath");
+                        Log.d(TAG, "当前用户的账号为：" + currentUserId);
+                        Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
+                        Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
+                        Log.d(TAG, "当前用户的头像地址为: " + currentImagePath);
+                        userNickName.setText(currentUserNickName);
+                        userSignature.setText(currentSignature);
+                        diplayImage(currentImagePath);
+                    }
+                    break;
+                case 3: // 从个人信息返回来的数据，要更新导航栏中的数据，包括昵称，签名，图片路径
+                    if (resultCode == RESULT_OK) {
+                        currentUserNickName = data.getStringExtra("nickName");
+                        currentSignature = data.getStringExtra("signature");
+                        currentImagePath = data.getStringExtra("imagePath");
+                        Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
+                        Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
+                        Log.d(TAG, "当前用户的图片路径为： " + currentImagePath);
+                        System.out.println("当前用户的图片路径7777777为： " + currentImagePath);
+                        userNickName.setText(currentUserNickName);
+                        userSignature.setText(currentSignature);
+                        diplayImage(currentImagePath);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

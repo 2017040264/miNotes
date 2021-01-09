@@ -68,6 +68,7 @@ public class Notes {
     public static final Uri CONTENT_DATA_URI = Uri.parse("content://" + AUTHORITY + "/data");
 
     public interface NoteColumns {
+        public static final String USERID = "userid";
         /**
          * The unique ID for a row
          * <P> Type: INTEGER (long) </P>
@@ -174,6 +175,7 @@ public class Notes {
     }
 
     public interface DataColumns {
+        public static final String USERID = "userid";
         /**
          * The unique ID for a row
          * <P> Type: INTEGER (long) </P>

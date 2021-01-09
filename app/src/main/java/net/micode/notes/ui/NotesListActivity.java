@@ -975,6 +975,8 @@ public class NotesListActivity extends BaseActivity implements OnClickListener, 
             public void onClick(View v) {
                 hideSoftInput(etName);
                 String name = etName.getText().toString();
+
+                //如果已经存在同名的文件夹
                 if (DataUtils.checkVisibleFolderName(mContentResolver, name)) {
                     Toast.makeText(NotesListActivity.this, getString(R.string.folder_exist, name),
                             Toast.LENGTH_LONG).show();

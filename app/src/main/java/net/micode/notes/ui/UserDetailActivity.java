@@ -368,7 +368,23 @@ public class UserDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if(values.size()>0){
+            SQLiteDatabase  sqliteDatabase1 = dbHelper.getWritableDatabase();
+            sqliteDatabase1.update("user", values, "userid=?", new String[] { userId });
+            sqliteDatabase1.close();
+        }
 
+        //userInfo.save();
+        Intent intent = new Intent();
+        intent.putExtra("nickName", showNickName.getText().toString());
+        intent.putExtra("signature", showSignature.getText().toString());
+        intent.putExtra("imagePath", curImagePath);
+        setResult(RESULT_OK, intent);
+        System.out.println("当前个人信息活动页被销毁！！！");
+        UserDetailActivity.this.finish();
+    }
 
     @Override
     protected void onDestroy() {

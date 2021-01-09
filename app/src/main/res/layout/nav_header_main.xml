@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-<<<<<<< HEAD
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-=======
->>>>>>> 3b1c4d5bc4fdacbafb170fab3d5dd5fbf8391892
     android:layout_width="match_parent"
     android:layout_height="190dp"
     android:background="#03A9F4"
@@ -16,12 +12,12 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerInParent="true"
-<<<<<<< HEAD
+
         android:src="@drawable/user"
         tools:ignore="MissingClass" />
-=======
+
         android:src="@drawable/user" />
->>>>>>> 3b1c4d5bc4fdacbafb170fab3d5dd5fbf8391892
+
 
 
     <TextView

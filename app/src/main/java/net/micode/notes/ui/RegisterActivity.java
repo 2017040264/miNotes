@@ -9,15 +9,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-<<<<<<< HEAD
+
 
 import androidx.appcompat.app.ActionBar;
-=======
+
 import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
->>>>>>> c5b774f9aa1bbc59e6b6a973c871e7209e5a9335
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -137,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity{
         });
     }
 
-<<<<<<< HEAD
+
     //顶部标题栏的返回按钮
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -148,8 +148,6 @@ public class RegisterActivity extends AppCompatActivity{
         }
         return super.onOptionsItemSelected(item);
     }
-=======
 
->>>>>>> c5b774f9aa1bbc59e6b6a973c871e7209e5a9335
 }
 

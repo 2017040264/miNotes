@@ -96,7 +96,16 @@ public class NotesProvider extends ContentProvider {
         String id = null;
         switch (mMatcher.match(uri)) {
             case URI_NOTE:
-                c = db.query(TABLE.NOTE, projection, "userid=?", new String[]{NotesListActivity.currentUserId}, null, null,
+//                if(NotesListActivity.currentUserId==null)
+//                {
+//
+//                }
+//                else {
+//
+//                }
+               // c = db.query(TABLE.NOTE, projection, selection, selectionArgs, null, null,sortOrder);
+
+              c = db.query(TABLE.NOTE, projection, "userid=? or userid=?", new String[]{NotesListActivity.currentUserId,"system"}, null, null,
                         sortOrder);
                 // 参数1：（String）表名
                 // 参数2：（String[]）要查询的列名
@@ -112,7 +121,11 @@ public class NotesProvider extends ContentProvider {
                         + parseSelection(selection), selectionArgs, null, null, sortOrder);
                 break;
             case URI_DATA:
-                c = db.query(TABLE.DATA, projection, "userid=?", new String[]{NotesListActivity.currentUserId}, null, null,
+
+
+                //c = db.query(TABLE.DATA, projection, selection, selectionArgs, null, null,sortOrder);
+
+                c = db.query(TABLE.DATA, projection, "userid=? or userid=?", new String[]{NotesListActivity.currentUserId,"system"}, null, null,
                         sortOrder);
                 break;
             case URI_DATA_ITEM:
@@ -162,8 +175,10 @@ public class NotesProvider extends ContentProvider {
 
         String userid=null;
         userid=NotesListActivity.currentUserId;
-        SQLiteDatabase db = mHelper.getWritableDatabase();
         values.put("userid",userid);
+
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+
         long dataId = 0, noteId = 0, insertedId = 0;
         switch (mMatcher.match(uri)) {
             case URI_NOTE:

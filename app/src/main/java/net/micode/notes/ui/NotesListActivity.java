@@ -144,7 +144,7 @@ public class NotesListActivity extends BaseActivity implements OnClickListener, 
     private NavigationView navigationView;
 
     // 采用静态变量来存储当前登录的账号
-    public static String currentUserId;
+    public static String currentUserId="system";
 
     private TextView userNickName, userSignature;
 
@@ -386,13 +386,22 @@ public class NotesListActivity extends BaseActivity implements OnClickListener, 
         if (!TextUtils.isEmpty(currentUserId)) {
             SQLiteDatabase  sqliteDatabase = dbHelper.getWritableDatabase();
             Cursor cursor = sqliteDatabase.rawQuery("select * from user where userid=?",new String[]{currentUserId});
-            cursor.moveToFirst();
-            //List<user> userInfos = LitePal.where("userid = ?", currentUserId).find(user.class);
-            userNickName.setText(cursor.getString(cursor.getColumnIndex("username")));
-            userSignature.setText(cursor.getString(cursor.getColumnIndex("userSignature")));
-            currentImagePath = cursor.getString(cursor.getColumnIndex("userimagePath"));
-            //System.out.println("主界面初始化数据：" + userInfos);
-            diplayImage(currentImagePath);
+            if(cursor.getCount()>0)
+            {
+                cursor.moveToFirst();
+                //List<user> userInfos = LitePal.where("userid = ?", currentUserId).find(user.class);
+                userNickName.setText(cursor.getString(cursor.getColumnIndex("username")));
+                userSignature.setText(cursor.getString(cursor.getColumnIndex("userSignature")));
+                currentImagePath = cursor.getString(cursor.getColumnIndex("userimagePath"));
+                //System.out.println("主界面初始化数据：" + userInfos);
+                diplayImage(currentImagePath);
+            }
+            else {
+                userNickName.setText("请先登录");
+
+                userAvatar.setImageResource(R.drawable.user);
+            }
+
         } else {
             userNickName.setText("请先登录");
 

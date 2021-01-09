@@ -103,10 +103,11 @@ public class NotesProvider extends ContentProvider {
 //                else {
 //
 //                }
-               // c = db.query(TABLE.NOTE, projection, selection, selectionArgs, null, null,sortOrder);
+                c = db.query(TABLE.NOTE, projection, selection, selectionArgs, null, null,sortOrder);
+                //c = db.query(TABLE.NOTE, projection, "userid=?", new String[]{NotesListActivity.currentUserId}, null, null,sortOrder);
 
-              c = db.query(TABLE.NOTE, projection, "userid=? or userid=?", new String[]{NotesListActivity.currentUserId,"system"}, null, null,
-                        sortOrder);
+              //c = db.query(TABLE.NOTE, projection, "userid=? or userid=?", new String[]{NotesListActivity.currentUserId,"system"}, null, null,sortOrder);
+
                 // 参数1：（String）表名
                 // 参数2：（String[]）要查询的列名
                 // 参数3：（String）查询条件
@@ -123,10 +124,12 @@ public class NotesProvider extends ContentProvider {
             case URI_DATA:
 
 
-                //c = db.query(TABLE.DATA, projection, selection, selectionArgs, null, null,sortOrder);
+                c = db.query(TABLE.DATA, projection, selection, selectionArgs, null, null,sortOrder);
 
-                c = db.query(TABLE.DATA, projection, "userid=? or userid=?", new String[]{NotesListActivity.currentUserId,"system"}, null, null,
-                        sortOrder);
+                //c = db.query(TABLE.DATA, projection, "userid=?", new String[]{NotesListActivity.currentUserId}, null, null, sortOrder);
+
+                //c = db.query(TABLE.DATA, projection, "userid=? or userid=?", new String[]{NotesListActivity.currentUserId,"system"}, null, null, sortOrder);
+
                 break;
             case URI_DATA_ITEM:
                 id = uri.getPathSegments().get(1);

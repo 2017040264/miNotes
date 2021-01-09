@@ -329,7 +329,7 @@ public class NotesListActivity extends BaseActivity implements OnClickListener, 
                 switch (menuItem.getItemId()) {
                     case R.id.nav_edit:
                         //每个菜单项的点击事件，通过Intent实现点击item简单实现活动页面的跳转。
-                        if (!TextUtils.isEmpty(currentUserId)) {
+                        if (!TextUtils.isEmpty(currentUserId)&&!currentUserId.equals("system")) {
                             Intent editIntent = new Intent(NotesListActivity.this, UserDetailActivity.class);
                             editIntent.putExtra("user_edit_id", currentUserId);
                             startActivityForResult(editIntent, 3);

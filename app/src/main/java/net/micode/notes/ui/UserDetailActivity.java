@@ -254,8 +254,13 @@ public class UserDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // 保存更改的数据
-                SQLiteDatabase  sqliteDatabase1 = dbHelper.getWritableDatabase();
-                sqliteDatabase1.update("user", values, "userid=?", new String[] { userId });
+
+                if(values.size()>0){
+                    SQLiteDatabase  sqliteDatabase1 = dbHelper.getWritableDatabase();
+                    sqliteDatabase1.update("user", values, "userid=?", new String[] { userId });
+                    sqliteDatabase1.close();
+                }
+
                 //userInfo.save();
                 Intent intent = new Intent();
                 intent.putExtra("nickName", showNickName.getText().toString());

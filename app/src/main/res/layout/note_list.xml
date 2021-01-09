@@ -31,13 +31,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="50dp"
             android:background="#03A9F4"
-            app:title="@string/app_name"
-            app:popupTheme="@style/Theme.MyApplication.PopupOverlay" >
+
+            app:popupTheme="@style/Theme.MyApplication.PopupOverlay"
+            app:title="@string/app_name">
+
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -45,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/colorGray"
+        android:background="@color/white"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 <!--app:layout_behavior 解决遮挡问题-->
 

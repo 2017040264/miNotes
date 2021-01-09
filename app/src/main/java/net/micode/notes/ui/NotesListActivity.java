@@ -304,7 +304,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
             //通过HomeAsUp来让导航按钮显示出来
             actionBar.setDisplayHomeAsUpEnabled(true);
             //设置Indicator来添加一个点击图标（默认图标是一个返回的箭头）
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic__menu);
         }
 
         //设置默认选中第一个
@@ -1219,11 +1219,17 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
         return NotesPreferenceActivity.getSyncAccountName(this).trim().length() > 0;
     }
 
+
+
     private void startPreferenceActivity() {
         Activity from = getParent() != null ? getParent() : this;
         Intent intent = new Intent(from, NotesPreferenceActivity.class);
         from.startActivityIfNeeded(intent, -1);
     }
+
+
+
+
 
     private class OnListItemClickListener implements OnItemClickListener {
 

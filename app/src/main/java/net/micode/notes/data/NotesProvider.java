@@ -81,6 +81,7 @@ public class NotesProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        // 创建SQLiteOpenHelper子类对象
         mHelper = NotesDatabaseHelper.getInstance(getContext());
         return true;
     }
@@ -89,6 +90,7 @@ public class NotesProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
         Cursor c = null;
+        //数据库实际上是没有被创建或者打开的，直到getWritableDatabase() 或者 getReadableDatabase() 方法中的一个被调用时才会进行创建或者打开
         SQLiteDatabase db = mHelper.getReadableDatabase();
         String id = null;
         switch (mMatcher.match(uri)) {

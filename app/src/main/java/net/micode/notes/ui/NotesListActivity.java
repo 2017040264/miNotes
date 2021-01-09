@@ -101,6 +101,9 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 
+import android.database.sqlite.SQLiteDatabase;
+import net.micode.notes.data.NotesDatabaseHelper;
+
 public class NotesListActivity extends BaseActivity implements OnClickListener, OnItemLongClickListener {
     private static final int FOLDER_NOTE_LIST_QUERY_TOKEN = 0;
 
@@ -180,6 +183,7 @@ public class NotesListActivity extends BaseActivity implements OnClickListener, 
     private final static int REQUEST_CODE_OPEN_NODE = 102;
     private final static int REQUEST_CODE_NEW_NODE  = 103;
 
+    private NotesDatabaseHelper dbHelper;
     // Activity 启动调用的第一个函数。主要是一些初始化工作，但是不要过于复杂，否则启动过慢，影响用户体验。
     // saveInsanceState是保存的Activity状态，
     // onSaveInsanceState()
@@ -188,6 +192,8 @@ public class NotesListActivity extends BaseActivity implements OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+        //  创建DatabaseHelper对象
+        dbHelper=new NotesDatabaseHelper(NotesListActivity.this);
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -275,6 +281,9 @@ public class NotesListActivity extends BaseActivity implements OnClickListener, 
             }
 
             // WorkingNote.java文件
+            // ID_ROOT_FOLDER = 0
+            // INVALID_APPWIDGET_ID = 0
+            // TYPE_WIDGET_INVALIDE  = -1,无效的widget,默认不创建widget
              WorkingNote note = WorkingNote.createEmptyNote(this, Notes.ID_ROOT_FOLDER,
                     AppWidgetManager.INVALID_APPWIDGET_ID, Notes.TYPE_WIDGET_INVALIDE,
                     ResourceParser.RED);
@@ -375,11 +384,14 @@ public class NotesListActivity extends BaseActivity implements OnClickListener, 
         userSignature = v.findViewById(R.id.text_signature);
         userAvatar = v.findViewById(R.id.icon_image);
         if (!TextUtils.isEmpty(currentUserId)) {
-            List<user> userInfos = LitePal.where("userid = ?", currentUserId).find(user.class);
-            userNickName.setText(userInfos.get(0).getUsername());
-            userSignature.setText(userInfos.get(0).getUserSignature());
-            currentImagePath = userInfos.get(0).getUserimagePath();
-            System.out.println("主界面初始化数据：" + userInfos);
+            SQLiteDatabase  sqliteDatabase = dbHelper.getWritableDatabase();
+            Cursor cursor = sqliteDatabase.rawQuery("select * from user where userid=?",new String[]{currentUserId});
+            cursor.moveToFirst();
+            //List<user> userInfos = LitePal.where("userid = ?", currentUserId).find(user.class);
+            userNickName.setText(cursor.getString(cursor.getColumnIndex("username")));
+            userSignature.setText(cursor.getString(cursor.getColumnIndex("userSignature")));
+            currentImagePath = cursor.getString(cursor.getColumnIndex("userimagePath"));
+            //System.out.println("主界面初始化数据：" + userInfos);
             diplayImage(currentImagePath);
         } else {
             userNickName.setText("请先登录");

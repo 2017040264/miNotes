@@ -11,6 +11,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -37,7 +38,8 @@ import net.micode.notes.model.user;
 
 
 import org.litepal.LitePal;
-
+import android.database.sqlite.SQLiteDatabase;
+import net.micode.notes.data.NotesDatabaseHelper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,6 +49,9 @@ import java.util.List;
 public class UserDetailActivity extends AppCompatActivity {
 
     private ImageView userAvatar;
+    private NotesDatabaseHelper dbHelper;
+
+    private String curImagePath;
 
     private Toolbar detailToolbar;
 
@@ -63,10 +68,16 @@ public class UserDetailActivity extends AppCompatActivity {
 
     private Calendar calendar;
 
+    private ContentValues values;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail);
+
+        //  创建DatabaseHelper对象
+        dbHelper=new NotesDatabaseHelper(UserDetailActivity.this);
+        values = new ContentValues();
 
         detailToolbar = findViewById(R.id.userData_toolbar);
         detailToolbar.setTitle("我的信息");
@@ -90,34 +101,47 @@ public class UserDetailActivity extends AppCompatActivity {
         showSignature = findViewById(R.id.show_sign);
 
         userId = getIntent().getStringExtra("user_edit_id");
+
         initData();
+
+    }
+
+    // 初始化数据
+    private void initData() {
+        SQLiteDatabase  sqliteDatabase = dbHelper.getWritableDatabase();
+        Cursor cursor = sqliteDatabase.rawQuery("select * from user where userid=?",new String[]{userId});
+        cursor.moveToFirst();
+        showNickName.setText(cursor.getString(cursor.getColumnIndex("username")));
+        showSex.setText(cursor.getString(cursor.getColumnIndex("usersex")));
+        String birth=cursor.getString(cursor.getColumnIndex("userbirthday"));
+        showBirthday.setText(birth);
+        showSignature.setText(cursor.getString(cursor.getColumnIndex("userSignature")));
+        curImagePath = cursor.getString(cursor.getColumnIndex("userimagePath"));
+
+//        List<user> infos = LitePal.where("userid = ?", userId).find(user.class);
+//        userInfo = infos.get(0);
+//        System.out.println("用户详情界面的信息为" + userInfo);
+//        showNickName.setText(userInfo.getUsername());
+//        showSex.setText(userInfo.getUsersex());
+//        showBirthday.setText(userInfo.getUserbirthday());
+//        showSignature.setText(userInfo.getUserSignature());
+//        String curImagePath = userInfo.getUserimagePath();
+        diplayImage(curImagePath);
 
         calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
         Date date = null;
 
         //如果生日字段不为空并且不是"待完善"，就将calendar设置为生日字段的日期。
-        if (!TextUtils.isEmpty(userInfo.getUserbirthday()) && !userInfo.getUserbirthday().equals("待完善")) {
+        if (!TextUtils.isEmpty(birth) && !birth.equals("待完善")) {
             try {
-                date = format.parse(userInfo.getUserbirthday());
+                date = format.parse(birth);
                 calendar.setTime(date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    // 初始化数据
-    private void initData() {
-        List<user> infos = LitePal.where("userid = ?", userId).find(user.class);
-        userInfo = infos.get(0);
-        System.out.println("用户详情界面的信息为" + userInfo);
-        showNickName.setText(userInfo.getUsername());
-        showSex.setText(userInfo.getUsersex());
-        showBirthday.setText(userInfo.getUserbirthday());
-        showSignature.setText(userInfo.getUserSignature());
-        String curImagePath = userInfo.getUserimagePath();
-        diplayImage(curImagePath);
+        sqliteDatabase.close();
     }
 
     // 在活动由不可见变为可见的时候调用
@@ -141,7 +165,7 @@ public class UserDetailActivity extends AppCompatActivity {
                         .title("修改昵称")
                         .inputRangeRes(2, 8, R.color.black)
                         .inputType(InputType.TYPE_CLASS_TEXT)
-                        .input("请输入要修改的昵称", userInfo.getUsername(), new MaterialDialog.InputCallback() {
+                        .input("请输入要修改的昵称", showNickName.getText(), new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(MaterialDialog dialog, CharSequence input) {
                                 // CharSequence的值是可读可写序列，而String的值是只读序列。
@@ -149,8 +173,9 @@ public class UserDetailActivity extends AppCompatActivity {
 
                                 System.out.println(input.toString());
                                 // 重新设置值，当前活动被销毁时才保存到数据库
-                                userInfo.setUsername(input.toString());
-                                showNickName.setText(userInfo.getUsername());
+                                values.put("username",input.toString());
+                                //userInfo.setUsername(input.toString());
+                                showNickName.setText(input.toString());
                             }
                         })
                         .positiveText("确定")
@@ -165,13 +190,14 @@ public class UserDetailActivity extends AppCompatActivity {
                 new MaterialDialog.Builder(UserDetailActivity.this)
                         .title("修改性别")
                         .items(contentSex)
-                        .itemsCallbackSingleChoice(userInfo.getUsersex().equals("女") ? 1 : 0, new MaterialDialog.ListCallbackSingleChoice() {
+                        .itemsCallbackSingleChoice(showSex.getText().equals("女") ? 1 : 0, new MaterialDialog.ListCallbackSingleChoice() {
                             @Override
                             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                                 System.out.println("选择哪一个" + which);
                                 System.out.println("选择的内容是" + text);
-                                userInfo.setUsersex(text.toString());
-                                showSex.setText(userInfo.getUsersex());
+                                values.put("usersex",text.toString());
+                                //userInfo.setUsersex(text.toString());
+                                showSex.setText(text.toString());
                                 return true;
                             }
                         })
@@ -188,7 +214,8 @@ public class UserDetailActivity extends AppCompatActivity {
                     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
                         String birth = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                         System.out.println(birth);
-                        userInfo.setUserbirthday(birth);
+                        values.put("userbirthday",birth);
+                        //userInfo.setUserbirthday(birth);
                         showBirthday.setText(birth);
                     }
                 },
@@ -206,13 +233,14 @@ public class UserDetailActivity extends AppCompatActivity {
                         .title("修改个性签名")
                         .inputRangeRes(1, 38, R.color.black)
                         .inputType(InputType.TYPE_CLASS_TEXT)
-                        .input("请输入要修改的个性签名", userInfo.getUserSignature(), new MaterialDialog.InputCallback() {
+                        .input("请输入要修改的个性签名", showSignature.getText(), new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(MaterialDialog dialog, CharSequence input) {
 
                                 System.out.println(input.toString());
-                                userInfo.setUserSignature(input.toString());
-                                showSignature.setText(userInfo.getUserSignature());
+                                values.put("userSignature",input.toString());
+                                //userInfo.setUserSignature(input.toString());
+                                showSignature.setText(input.toString());
                             }
                         })
                         .positiveText("确定")
@@ -226,11 +254,13 @@ public class UserDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // 保存更改的数据
-                userInfo.save();
+                SQLiteDatabase  sqliteDatabase1 = dbHelper.getWritableDatabase();
+                sqliteDatabase1.update("user", values, "userid=?", new String[] { userId });
+                //userInfo.save();
                 Intent intent = new Intent();
                 intent.putExtra("nickName", showNickName.getText().toString());
                 intent.putExtra("signature", showSignature.getText().toString());
-                intent.putExtra("imagePath", userInfo.getUserimagePath());
+                intent.putExtra("imagePath", curImagePath);
                 setResult(RESULT_OK, intent);
                 System.out.println("当前个人信息活动页被销毁！！！");
                 UserDetailActivity.this.finish();
@@ -298,8 +328,10 @@ public class UserDetailActivity extends AppCompatActivity {
             imagePath = uri.getPath();
         }
         // 根据图片路径显示图片
-        userInfo.setUserimagePath(imagePath);
-        System.out.println("更新图片后，用户信息为" + userInfo);
+        values.put("userimagePath",imagePath);
+        curImagePath=imagePath;
+        //userInfo.setUserimagePath(imagePath);
+        //System.out.println("更新图片后，用户信息为" + userInfo);
         diplayImage(imagePath);
     }
 

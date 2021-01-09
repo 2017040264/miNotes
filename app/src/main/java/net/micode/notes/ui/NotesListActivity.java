@@ -81,6 +81,7 @@ import net.micode.notes.model.WorkingNote;
 import net.micode.notes.model.user;
 import net.micode.notes.tool.ActivityCollector;
 import net.micode.notes.tool.BackupUtils;
+import net.micode.notes.tool.BaseActivity;
 import net.micode.notes.tool.DataUtils;
 import net.micode.notes.tool.ResourceParser;
 import net.micode.notes.ui.NotesListAdapter.AppWidgetAttribute;
@@ -100,7 +101,10 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 
-public class NotesListActivity extends AppCompatActivity implements OnClickListener, OnItemLongClickListener {
+import android.database.sqlite.SQLiteDatabase;
+import net.micode.notes.data.NotesDatabaseHelper;
+
+public class NotesListActivity extends BaseActivity implements OnClickListener, OnItemLongClickListener {
     private static final int FOLDER_NOTE_LIST_QUERY_TOKEN = 0;
 
     private static final int FOLDER_LIST_QUERY_TOKEN      = 1;
@@ -140,7 +144,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
     private NavigationView navigationView;
 
     // 采用静态变量来存储当前登录的账号
-    public static String currentUserId;
+    public static String currentUserId="system";
 
     private TextView userNickName, userSignature;
 
@@ -179,6 +183,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
     private final static int REQUEST_CODE_OPEN_NODE = 102;
     private final static int REQUEST_CODE_NEW_NODE  = 103;
 
+    private NotesDatabaseHelper dbHelper;
     // Activity 启动调用的第一个函数。主要是一些初始化工作，但是不要过于复杂，否则启动过慢，影响用户体验。
     // saveInsanceState是保存的Activity状态，
     // onSaveInsanceState()
@@ -187,6 +192,8 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+        //  创建DatabaseHelper对象
+        dbHelper=new NotesDatabaseHelper(NotesListActivity.this);
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -272,7 +279,11 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
                     }
                 }
             }
+
             // WorkingNote.java文件
+            // ID_ROOT_FOLDER = 0
+            // INVALID_APPWIDGET_ID = 0
+            // TYPE_WIDGET_INVALIDE  = -1,无效的widget,默认不创建widget
              WorkingNote note = WorkingNote.createEmptyNote(this, Notes.ID_ROOT_FOLDER,
                     AppWidgetManager.INVALID_APPWIDGET_ID, Notes.TYPE_WIDGET_INVALIDE,
                     ResourceParser.RED);
@@ -318,7 +329,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
                 switch (menuItem.getItemId()) {
                     case R.id.nav_edit:
                         //每个菜单项的点击事件，通过Intent实现点击item简单实现活动页面的跳转。
-                        if (!TextUtils.isEmpty(currentUserId)) {
+                        if (!TextUtils.isEmpty(currentUserId)&&!currentUserId.equals("system")) {
                             Intent editIntent = new Intent(NotesListActivity.this, UserDetailActivity.class);
                             editIntent.putExtra("user_edit_id", currentUserId);
                             startActivityForResult(editIntent, 3);
@@ -373,16 +384,28 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
         userSignature = v.findViewById(R.id.text_signature);
         userAvatar = v.findViewById(R.id.icon_image);
         if (!TextUtils.isEmpty(currentUserId)) {
-            List<user> userInfos = LitePal.where("userid = ?", currentUserId).find(user.class);
-            userNickName.setText(userInfos.get(0).getUsername());
-            userSignature.setText(userInfos.get(0).getUserSignature());
-            currentImagePath = userInfos.get(0).getUserimagePath();
-            System.out.println("主界面初始化数据：" + userInfos);
-            diplayImage(currentImagePath);
+            SQLiteDatabase  sqliteDatabase = dbHelper.getWritableDatabase();
+            Cursor cursor = sqliteDatabase.rawQuery("select * from user where userid=?",new String[]{currentUserId});
+            if(cursor.getCount()>0)
+            {
+                cursor.moveToFirst();
+                //List<user> userInfos = LitePal.where("userid = ?", currentUserId).find(user.class);
+                userNickName.setText(cursor.getString(cursor.getColumnIndex("username")));
+                userSignature.setText(cursor.getString(cursor.getColumnIndex("userSignature")));
+                currentImagePath = cursor.getString(cursor.getColumnIndex("userimagePath"));
+                //System.out.println("主界面初始化数据：" + userInfos);
+                diplayImage(currentImagePath);
+            }
+            else {
+                userNickName.setText("请先登录");
+
+                userAvatar.setImageResource(R.drawable.user);
+            }
+
         } else {
             userNickName.setText("请先登录");
-            userSignature.setText("请先登录");
-            userAvatar.setImageResource(R.drawable.xiaomi);
+
+            userAvatar.setImageResource(R.drawable.user);
         }
 
         startAsyncNotesListQuery();
@@ -421,46 +444,51 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
     // 通过登录来接收值
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        View v = navigationView.getHeaderView(0);
+        if (resultCode == RESULT_OK
+                && (requestCode == REQUEST_CODE_OPEN_NODE || requestCode == REQUEST_CODE_NEW_NODE)) {
+            mNotesListAdapter.changeCursor(null);
+       } else {
+            super.onActivityResult(requestCode, resultCode, data);
+            View v = navigationView.getHeaderView(0);
 
-        userNickName = v.findViewById(R.id.text_nickname);
-        userSignature = v.findViewById(R.id.text_signature);
-        userAvatar=v.findViewById(R.id.icon_image);
+            userNickName = v.findViewById(R.id.text_nickname);
+            userSignature = v.findViewById(R.id.text_signature);
+            userAvatar = v.findViewById(R.id.icon_image);
 
-        switch (requestCode) {
-            case 1: // 切换账号登录后来主界面
-                if (resultCode == RESULT_OK) {
-                    Toast.makeText(NotesListActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                    currentUserId = data.getStringExtra("userID");
-                    currentUserNickName = data.getStringExtra("userNick");
-                    currentSignature = data.getStringExtra("userSign");
-                    currentImagePath = data.getStringExtra("imagePath");
-                    Log.d(TAG, "当前用户的账号为：" + currentUserId);
-                    Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
-                    Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
-                    Log.d(TAG, "当前用户的头像地址为: " + currentImagePath);
-                    userNickName.setText(currentUserNickName);
-                    userSignature.setText(currentSignature);
-                    diplayImage(currentImagePath);
-                }
-                break;
-            case 3: // 从个人信息返回来的数据，要更新导航栏中的数据，包括昵称，签名，图片路径
-                if (resultCode == RESULT_OK) {
-                    currentUserNickName = data.getStringExtra("nickName");
-                    currentSignature = data.getStringExtra("signature");
-                    currentImagePath = data.getStringExtra("imagePath");
-                    Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
-                    Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
-                    Log.d(TAG, "当前用户的图片路径为： " + currentImagePath);
-                    System.out.println("当前用户的图片路径7777777为： " + currentImagePath);
-                    userNickName.setText(currentUserNickName);
-                    userSignature.setText(currentSignature);
-                    diplayImage(currentImagePath);
-                }
-                break;
-            default:
-                break;
+            switch (requestCode) {
+                case 1: // 切换账号登录后来主界面
+                    if (resultCode == RESULT_OK) {
+                        Toast.makeText(NotesListActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                        currentUserId = data.getStringExtra("userID");
+                        currentUserNickName = data.getStringExtra("userNick");
+                        currentSignature = data.getStringExtra("userSign");
+                        currentImagePath = data.getStringExtra("imagePath");
+                        Log.d(TAG, "当前用户的账号为：" + currentUserId);
+                        Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
+                        Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
+                        Log.d(TAG, "当前用户的头像地址为: " + currentImagePath);
+                        userNickName.setText(currentUserNickName);
+                        userSignature.setText(currentSignature);
+                        diplayImage(currentImagePath);
+                    }
+                    break;
+                case 3: // 从个人信息返回来的数据，要更新导航栏中的数据，包括昵称，签名，图片路径
+                    if (resultCode == RESULT_OK) {
+                        currentUserNickName = data.getStringExtra("nickName");
+                        currentSignature = data.getStringExtra("signature");
+                        currentImagePath = data.getStringExtra("imagePath");
+                        Log.d(TAG, "当前用户的昵称为：" + currentUserNickName);
+                        Log.d(TAG, "当前用户的个性签名为： " + currentSignature);
+                        Log.d(TAG, "当前用户的图片路径为： " + currentImagePath);
+                        System.out.println("当前用户的图片路径7777777为： " + currentImagePath);
+                        userNickName.setText(currentUserNickName);
+                        userSignature.setText(currentSignature);
+                        diplayImage(currentImagePath);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -470,7 +498,7 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             userAvatar.setImageBitmap(bitmap);
         } else {
-            userAvatar.setImageResource(R.drawable.xiaomi);
+            userAvatar.setImageResource(R.drawable.user);
         }
     }
 
@@ -947,6 +975,8 @@ public class NotesListActivity extends AppCompatActivity implements OnClickListe
             public void onClick(View v) {
                 hideSoftInput(etName);
                 String name = etName.getText().toString();
+
+                //如果已经存在同名的文件夹
                 if (DataUtils.checkVisibleFolderName(mContentResolver, name)) {
                     Toast.makeText(NotesListActivity.this, getString(R.string.folder_exist, name),
                             Toast.LENGTH_LONG).show();

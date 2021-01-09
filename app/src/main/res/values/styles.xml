@@ -70,4 +70,10 @@
     <style name="MyDatePickerDialogTheme" parent="android:Theme.Material.Light.Dialog" tools:targetApi="lollipop">
         <item name="android:colorAccent">@color/colorPrimary</item>
     </style>
+    <style name="ToolbarTextsize">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
 </resources>

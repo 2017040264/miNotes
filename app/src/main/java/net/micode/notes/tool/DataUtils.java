@@ -29,14 +29,21 @@ import android.util.Log;
 import net.micode.notes.data.Notes;
 import net.micode.notes.data.Notes.CallNote;
 import net.micode.notes.data.Notes.NoteColumns;
+import net.micode.notes.ui.NotesListActivity;
 import net.micode.notes.ui.NotesListAdapter.AppWidgetAttribute;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import android.database.sqlite.SQLiteDatabase;
 
-public class DataUtils {
+import androidx.appcompat.app.AppCompatActivity;
+
+import net.micode.notes.data.NotesDatabaseHelper;
+
+public class DataUtils extends AppCompatActivity {
     public static final String TAG = "DataUtils";
+    private static NotesDatabaseHelper dbHelper;
     public static boolean batchDeleteNotes(ContentResolver resolver, HashSet<Long> ids) {
         if (ids == null) {
             Log.d(TAG, "the ids is null");
@@ -196,6 +203,17 @@ public class DataUtils {
         }
         return exist;
     }
+
+//    public  static boolean checkVisibleFolderName1(String name){
+//        //  创建DatabaseHelper对象
+//        dbHelper=new NotesDatabaseHelper(DataUtils.this);
+//        SQLiteDatabase  db = dbHelper.getWritableDatabase();
+//        Cursor cursor=db.rawQuery("select * from note where userid=? and type=? and snippet=? ",new String[]{NotesListActivity.currentUserId,"1",name});
+//        db.close();
+//        if(cursor.getCount()>0)
+//            return true;
+//        else return false;
+//    }
 
     public static HashSet<AppWidgetAttribute> getFolderNoteWidget(ContentResolver resolver, long folderId) {
         Cursor c = resolver.query(Notes.CONTENT_NOTE_URI,

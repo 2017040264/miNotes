@@ -33,6 +33,7 @@ import net.micode.notes.R;
 import net.micode.notes.data.Notes.DataColumns;
 import net.micode.notes.data.Notes.NoteColumns;
 import net.micode.notes.data.NotesDatabaseHelper.TABLE;
+import net.micode.notes.ui.NotesListActivity;
 
 
 public class NotesProvider extends ContentProvider {
@@ -81,6 +82,7 @@ public class NotesProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        // 创建SQLiteOpenHelper子类对象
         mHelper = NotesDatabaseHelper.getInstance(getContext());
         return true;
     }
@@ -89,12 +91,30 @@ public class NotesProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
         Cursor c = null;
+        //数据库实际上是没有被创建或者打开的，直到getWritableDatabase() 或者 getReadableDatabase() 方法中的一个被调用时才会进行创建或者打开
         SQLiteDatabase db = mHelper.getReadableDatabase();
         String id = null;
         switch (mMatcher.match(uri)) {
             case URI_NOTE:
-                c = db.query(TABLE.NOTE, projection, selection, selectionArgs, null, null,
-                        sortOrder);
+//                if(NotesListActivity.currentUserId==null)
+//                {
+//
+//                }
+//                else {
+//
+//                }
+                c = db.query(TABLE.NOTE, projection, selection, selectionArgs, null, null,sortOrder);
+                //c = db.query(TABLE.NOTE, projection, "userid=?", new String[]{NotesListActivity.currentUserId}, null, null,sortOrder);
+
+              //c = db.query(TABLE.NOTE, projection, "userid=? or userid=?", new String[]{NotesListActivity.currentUserId,"system"}, null, null,sortOrder);
+
+                // 参数1：（String）表名
+                // 参数2：（String[]）要查询的列名
+                // 参数3：（String）查询条件
+                // 参数4：（String[]）查询条件的参数
+                // 参数5：（String）对查询的结果进行分组
+                // 参数6：（String）对分组的结果进行限制
+                // 参数7：（String）对查询的结果进行排序
                 break;
             case URI_NOTE_ITEM:
                 id = uri.getPathSegments().get(1);
@@ -102,8 +122,14 @@ public class NotesProvider extends ContentProvider {
                         + parseSelection(selection), selectionArgs, null, null, sortOrder);
                 break;
             case URI_DATA:
-                c = db.query(TABLE.DATA, projection, selection, selectionArgs, null, null,
-                        sortOrder);
+
+
+                c = db.query(TABLE.DATA, projection, selection, selectionArgs, null, null,sortOrder);
+
+                //c = db.query(TABLE.DATA, projection, "userid=?", new String[]{NotesListActivity.currentUserId}, null, null, sortOrder);
+
+                //c = db.query(TABLE.DATA, projection, "userid=? or userid=?", new String[]{NotesListActivity.currentUserId,"system"}, null, null, sortOrder);
+
                 break;
             case URI_DATA_ITEM:
                 id = uri.getPathSegments().get(1);
@@ -149,7 +175,13 @@ public class NotesProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+
+        String userid=null;
+        userid=NotesListActivity.currentUserId;
+        values.put("userid",userid);
+
         SQLiteDatabase db = mHelper.getWritableDatabase();
+
         long dataId = 0, noteId = 0, insertedId = 0;
         switch (mMatcher.match(uri)) {
             case URI_NOTE:

@@ -18,8 +18,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="menu_edit">编辑信息</string>
-    <string name="menu_switch">登录账号</string>
-    <string name="menu_exit">退出账号</string>
+    <string name="menu_switch">登录/切换账号</string>
+    <string name="menu_exit">退出app</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>

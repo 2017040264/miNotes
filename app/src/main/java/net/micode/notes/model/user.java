@@ -20,8 +20,9 @@ public class user extends LitePalSupport {
     private String usersex;
 
     // 个性签名
-  private String userSignature;
-    //    // 保存头像的路径
+   private String userSignature;
+
+    // 保存头像的路径
     private String userimagePath;
 
     public String getUserid() {

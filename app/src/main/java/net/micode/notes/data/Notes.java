@@ -17,6 +17,7 @@
 package net.micode.notes.data;
 
 import android.net.Uri;
+
 public class Notes {
 
     public static final String AUTHORITY = "micode_notes";
@@ -67,6 +68,7 @@ public class Notes {
     public static final Uri CONTENT_DATA_URI = Uri.parse("content://" + AUTHORITY + "/data");
 
     public interface NoteColumns {
+        public static final String USERID = "userid";
         /**
          * The unique ID for a row
          * <P> Type: INTEGER (long) </P>
@@ -173,6 +175,7 @@ public class Notes {
     }
 
     public interface DataColumns {
+        public static final String USERID = "userid";
         /**
          * The unique ID for a row
          * <P> Type: INTEGER (long) </P>

@@ -290,15 +290,18 @@ public class NoteEditActivity extends Activity implements OnClickListener,
         if (mWorkingNote.getCheckListMode() == TextNote.MODE_CHECK_LIST) {
             switchToListMode(mWorkingNote.getContent());
         } else {
-            content = mWorkingNote.getContent();
+            if(TextUtils.isEmpty(mNoteEditor.getText().toString()))
+                content=mWorkingNote.getContent();
+            else  content = mNoteEditor.getText().toString();
             if(!TextUtils.isEmpty(content)){
-
-            spannableString = ContentToSpannableString.Content2SpanStr(NoteEditActivity.this, content);
-            mNoteEditor.setMovementMethod(LinkMovementMethod.getInstance());
-            mNoteEditor.append(spannableString);  }
+                spannableString = ContentToSpannableString.Content2SpanStr(NoteEditActivity.this, content);
+                mNoteEditor.setMovementMethod(LinkMovementMethod.getInstance());
+                mNoteEditor.setText(spannableString);
+             }
             else
-            mNoteEditor.setText(getHighlightQueryResult(mWorkingNote.getContent(),mUserQuery));
+                mNoteEditor.setText(getHighlightQueryResult(mWorkingNote.getContent(),mUserQuery));
             mNoteEditor.setSelection(mNoteEditor.getText().length());
+
         }
         for (Integer id : sBgSelectorSelectionMap.keySet()) {
             findViewById(sBgSelectorSelectionMap.get(id)).setVisibility(View.GONE);
@@ -806,7 +809,7 @@ public class NoteEditActivity extends Activity implements OnClickListener,
             spannableString = ContentToSpannableString.Content2SpanStr(NoteEditActivity.this, content);
 
             mNoteEditor.setMovementMethod(LinkMovementMethod.getInstance());
-            mNoteEditor.append(spannableString);
+            mNoteEditor.setText(spannableString);
             mEditTextList.setVisibility(View.GONE);
             mNoteEditor.setVisibility(View.VISIBLE);
         }
